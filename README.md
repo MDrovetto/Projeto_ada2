@@ -1,6 +1,6 @@
-# E-Commerce Ada Tech - Projeto de Faculdade
+# E-Commerce Ada Tech - Projeto de Estudo
 
-Este projeto é um sistema de E-Commerce desenvolvido como um exercício acadêmico para a Ada Tech. O objetivo é aplicar os conceitos de Programação Orientada a Objetos (POO) e os princípios SOLID.
+Este projeto é um sistema de E-Commerce desenvolvido como um exercício para a Ada Tech. O objetivo é aplicar os conceitos de Programação Orientada a Objetos (POO) e os princípios SOLID.
 
 ## Estrutura do Projeto
 
