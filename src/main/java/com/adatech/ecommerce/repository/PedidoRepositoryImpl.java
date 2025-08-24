@@ -1,6 +1,5 @@
 package com.adatech.ecommerce.repository;
 
-import com.adatech.ecommerce.model.Pedido;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

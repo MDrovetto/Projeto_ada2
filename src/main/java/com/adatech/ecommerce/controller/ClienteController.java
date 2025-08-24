@@ -1,6 +1,5 @@
 package com.adatech.ecommerce.controller;
 
-import com.adatech.ecommerce.model.Cliente;
 import com.adatech.ecommerce.service.ClienteService;
 import com.adatech.ecommerce.service.ClienteServiceImpl;
 

@@ -1,7 +1,5 @@
 package com.adatech.ecommerce.service;
 
-import com.adatech.ecommerce.model.Cliente;
-
 /**
  * Implementação do serviço de notificação que simula o envio de e-mails.
  * TODO:

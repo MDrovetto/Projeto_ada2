@@ -1,8 +1,8 @@
 package com.adatech.ecommerce.controller;
 
-import com.adatech.ecommerce.model.Pedido;
 import com.adatech.ecommerce.service.PedidoService;
 import com.adatech.ecommerce.service.PedidoServiceImpl;
+import main.java.com.adatech.ecommerce.model.Pedido;
 
 import java.util.List;
 

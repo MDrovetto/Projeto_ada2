@@ -1,7 +1,5 @@
 package com.adatech.ecommerce.repository;
 
-import com.adatech.ecommerce.model.Pedido;
-
 /**
  * Interface específica para o repositório de Pedidos.
  * Herda as operações básicas de CrudRepository.

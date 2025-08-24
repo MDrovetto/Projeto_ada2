@@ -1,8 +1,5 @@
 package com.adatech.ecommerce.service;
 
-import com.adatech.ecommerce.model.Pedido;
-import com.adatech.ecommerce.model.Produto;
-
 import java.util.List;
 
 /**

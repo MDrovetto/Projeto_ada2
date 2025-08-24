@@ -1,10 +1,23 @@
-package com.adatech.ecommerce.model;
+package main.java.com.adatech.ecommerce.model;
 
-/**
- * Enum que representa os possíveis status de um pedido.
- * TODO:
- *  - Definir os valores do enum: ABERTO, AGUARDANDO_PAGAMENTO, PAGO, FINALIZADO.
- */
 public enum StatusPedido {
-}
+    ABERTO("Pedido Aberto"),
+    AGUARDANDO_PAGAMENTO("Aguardando Pagamento"),
+    PAGO("Pago"),
+    FINALIZADO("Finalizado");
 
+    private final String descricao;
+
+    StatusPedido(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    @Override
+    public String toString() {
+        return descricao;
+    }
+}

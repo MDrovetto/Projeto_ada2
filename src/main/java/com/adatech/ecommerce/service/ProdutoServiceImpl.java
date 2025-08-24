@@ -1,6 +1,5 @@
 package com.adatech.ecommerce.service;
 
-import com.adatech.ecommerce.model.Produto;
 import com.adatech.ecommerce.repository.ProdutoRepository;
 import com.adatech.ecommerce.repository.ProdutoRepositoryImpl;
 
