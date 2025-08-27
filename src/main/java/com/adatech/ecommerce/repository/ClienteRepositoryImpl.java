@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Implementação em memória do repositório de Clientes.
+ * Implementação em memória do repositório de Clientes
  * TODO:
  *  - Implementar os métodos da interface ClienteRepository.
  *  - Utilizar um Map<String, Cliente> para armazenar os clientes, usando o CPF como chave.
