@@ -1,8 +1,11 @@
 package com.adatech.ecommerce.repository;
 
+import com.adatech.ecommerce.model.Cliente;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Implementação em memória do repositório de Clientes.
@@ -19,19 +22,18 @@ public class ClienteRepositoryImpl implements ClienteRepository {
 
     @Override
     public void salvar(Cliente cliente) {
-        // TODO: Implementar a lógica para salvar ou atualizar o cliente
+        clientes.put(cliente.getCpf(), cliente);
     }
 
     @Override
     public List<Cliente> listarTodos() {
-        // TODO: Implementar a lógica para retornar a lista de clientes
-        return null;
+        return new ArrayList<>(clientes.values());
     }
 
     @Override
     public Cliente buscarPorId(String id) {
         // TODO: Implementar a lógica para buscar cliente por ID (CPF)
-        return null;
+
     }
 
     @Override
