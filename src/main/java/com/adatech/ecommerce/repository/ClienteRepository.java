@@ -9,7 +9,7 @@ import main.java.com.adatech.ecommerce.model.Cliente;
  *  - Adicionar, se necessário, métodos específicos para busca de clientes,
  *    como buscarPorCpf(String cpf).
  */
-public interface ClienteRepository extends com.adatech.ecommerce.repository.CrudRepository<Cliente, String> {
+public interface ClienteRepository extends CrudRepository<Cliente, String> {
     Cliente buscarPorCpf(String cpf);
 }
 
