@@ -1,4 +1,4 @@
-package com.adatech.ecommerce;
+package main.java.com.adatech.ecommerce;
 
 import com.adatech.ecommerce.view.MainView;
 

@@ -1,15 +1,16 @@
 package main.java.com.adatech.ecommerce.service;
 
-import com.adatech.ecommerce.repository.ClienteRepository;
-import com.adatech.ecommerce.repository.ClienteRepositoryImpl;
-import com.adatech.ecommerce.repository.PedidoRepository;
-import com.adatech.ecommerce.repository.PedidoRepositoryImpl;
-import com.adatech.ecommerce.repository.ProdutoRepository;
-import com.adatech.ecommerce.repository.ProdutoRepositoryImpl;
+import main.java.com.adatech.ecommerce.model.Pedido;
+import main.java.com.adatech.ecommerce.repository.ClienteRepository;
+import main.java.com.adatech.ecommerce.repository.ClienteRepositoryImpl;
+import main.java.com.adatech.ecommerce.repository.PedidoRepository;
+import main.java.com.adatech.ecommerce.repository.PedidoRepositoryImpl;
+import main.java.com.adatech.ecommerce.repository.ProdutoRepository;
+import main.java.com.adatech.ecommerce.repository.ProdutoRepositoryImpl;
 
 import java.util.List;
 
-/**
+/**.
  * Implementação dos serviços relacionados a Pedidos.
  * Contém a lógica de negócio para a entidade Pedido.
  * TODO:

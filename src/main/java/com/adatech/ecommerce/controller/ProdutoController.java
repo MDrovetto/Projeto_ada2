@@ -1,5 +1,6 @@
 package main.java.com.adatech.ecommerce.controller;
 
+import main.java.com.adatech.ecommerce.model.Produto;
 import  main.java.com.adatech.ecommerce.service.ProdutoService;
 import  main.java.com.adatech.ecommerce.service.ProdutoServiceImpl;
 

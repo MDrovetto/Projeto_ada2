@@ -2,6 +2,7 @@ package main.java.com.adatech.ecommerce.repository;
 
 import main.java.com.adatech.ecommerce.model.Produto;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,7 @@ import java.util.Map;
  *  - O método listarTodos deve retornar uma lista com todos os produtos.
  *  - O método buscarPorId deve retornar o produto correspondente.
  */
-public class ProdutoRepositoryImpl implements com.adatech.ecommerce.repository.ProdutoRepository {
+public class ProdutoRepositoryImpl implements ProdutoRepository {
     private static final Map<Integer, Produto> produtos = new HashMap<>();
     private static int proximoId = 0; // mudei para zero se ñ precisaria de mais um if no metodo salvar()
 
@@ -36,7 +37,7 @@ public class ProdutoRepositoryImpl implements com.adatech.ecommerce.repository.P
         // TODO: Implementar a lógica para retornar a lista de produtos
         // Retorna uma nova lista com todos os valores do Map.
         // Isso evita que a coleção interna seja modificada por quem usa este método.
-        return new ArrayList<>(produtos.values()); // retorna uma copia dos produtos ignorando as chave (ID)
+        return new ArrayList<>(produtos.values()); // retorna uma cópia dos produtos ignorando as chave (ID)
     }
 
     @Override
