@@ -50,7 +50,4 @@ public class ItemVenda {
                 ", subtotal=" + calcularSubtotal() +
                 '}';
     }
-
-    private class Produto {
-    }
 }

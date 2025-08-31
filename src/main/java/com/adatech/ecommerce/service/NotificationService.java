@@ -1,5 +1,7 @@
 package main.java.com.adatech.ecommerce.service;
 
+import main.java.com.adatech.ecommerce.model.Cliente;
+
 /**
  * Interface para serviços de notificação.
  * Define um contrato para enviar notificações aos clientes.

@@ -1,6 +1,7 @@
 package main.java.com.adatech.ecommerce.repository;
 
 import main.java.com.adatech.ecommerce.model.Cliente;
+import main.java.com.adatech.ecommerce.model.Pedido;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,8 +22,9 @@ public class ClienteRepositoryImpl implements ClienteRepository {
     private static final Map<String, Cliente> clientes = new HashMap<>();
 
     @Override
-    public void salvar(Cliente cliente) {
+    public Pedido salvar(Cliente cliente) {
         clientes.put(cliente.getCpf(), cliente);
+        return null;
     }
 
     @Override

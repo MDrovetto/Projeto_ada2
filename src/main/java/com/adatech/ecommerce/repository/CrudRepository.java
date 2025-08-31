@@ -1,5 +1,7 @@
 package main.java.com.adatech.ecommerce.repository;
 
+import main.java.com.adatech.ecommerce.model.Pedido;
+
 import java.util.List;
 
 /**
@@ -13,7 +15,7 @@ import java.util.List;
  *    - buscarPorId(ID id): T
  */
 public interface CrudRepository<T, ID> {
-    void salvar(T entidade);
+    Pedido salvar(T entidade);
     List<T> listarTodos();
     T buscarPorId(ID id);
 }
