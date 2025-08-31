@@ -1,4 +1,6 @@
-package com.adatech.ecommerce.repository;
+package main.java.com.adatech.ecommerce.repository;
+
+import main.java.com.adatech.ecommerce.model.Cliente;
 
 /**
  * Interface específica para o repositório de Clientes.
@@ -7,7 +9,7 @@ package com.adatech.ecommerce.repository;
  *  - Adicionar, se necessário, métodos específicos para busca de clientes,
  *    como buscarPorCpf(String cpf).
  */
-public interface ClienteRepository extends CrudRepository<Cliente, String> {
+public interface ClienteRepository extends com.adatech.ecommerce.repository.CrudRepository<Cliente, String> {
     Cliente buscarPorCpf(String cpf);
 }
 
