@@ -1,4 +1,4 @@
-package com.adatech.ecommerce.repository;
+package main.java.com.adatech.ecommerce.repository;
 
 import java.util.List;
 

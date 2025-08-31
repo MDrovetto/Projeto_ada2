@@ -1,7 +1,8 @@
-package com.adatech.ecommerce.controller;
+package main.java.com.adatech.ecommerce.controller;
 
-import com.adatech.ecommerce.service.ClienteService;
-import com.adatech.ecommerce.service.ClienteServiceImpl;
+import main.java.com.adatech.ecommerce.model.Cliente;
+import main.java.com.adatech.ecommerce.service.ClienteService;
+import main.java.com.adatech.ecommerce.service.ClienteServiceImpl;
 
 import java.util.List;
 

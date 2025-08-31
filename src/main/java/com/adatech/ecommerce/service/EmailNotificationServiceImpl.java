@@ -1,4 +1,4 @@
-package com.adatech.ecommerce.service;
+package main.java.com.adatech.ecommerce.service;
 
 /**
  * Implementação do serviço de notificação que simula o envio de e-mails.

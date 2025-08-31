@@ -122,7 +122,4 @@ public class Pedido {
                     '}';
         }
 
-    private class StatusPedido {
-    }
-}
 }

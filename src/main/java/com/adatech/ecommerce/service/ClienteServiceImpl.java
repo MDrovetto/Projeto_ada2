@@ -1,7 +1,8 @@
-package com.adatech.ecommerce.service;
+package main.java.com.adatech.ecommerce.service;
 
-import com.adatech.ecommerce.repository.ClienteRepository;
-import com.adatech.ecommerce.repository.ClienteRepositoryImpl;
+import main.java.com.adatech.ecommerce.model.Cliente;
+import main.java.com.adatech.ecommerce.repository.ClienteRepository;
+import main.java.com.adatech.ecommerce.repository.ClienteRepositoryImpl;
 
 import java.util.List;
 

@@ -1,4 +1,6 @@
-package com.adatech.ecommerce.repository;
+package main.java.com.adatech.ecommerce.repository;
+
+import main.java.com.adatech.ecommerce.model.Pedido;
 
 /**
  * Interface específica para o repositório de Pedidos.

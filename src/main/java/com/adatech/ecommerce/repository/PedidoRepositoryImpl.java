@@ -1,4 +1,6 @@
-package com.adatech.ecommerce.repository;
+package main.java.com.adatech.ecommerce.repository;
+
+import main.java.com.adatech.ecommerce.model.Pedido;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.Map;
  *  - O método listarTodos deve retornar uma lista com todos os pedidos.
  *  - O método buscarPorId deve retornar o pedido correspondente.
  */
-public class PedidoRepositoryImpl implements PedidoRepository {
+public class PedidoRepositoryImpl implements com.adatech.ecommerce.repository.PedidoRepository {
     private static final Map<Integer, Pedido> pedidos = new HashMap<>();
     private static int proximoId = 1;
 
@@ -31,7 +33,9 @@ public class PedidoRepositoryImpl implements PedidoRepository {
     @Override
     public Pedido buscarPorId(Integer id) {
         // TODO: Implementar a lógica para buscar pedido por ID
-        return null;
+        // Busca o produto no Map usando o ID como chave.
+        // Retorna o produto se encontrado ou 'null' se não existir.
+        return produtos.get(id); // metodo get() do Map<>()
     }
 }
 
