@@ -1,6 +1,6 @@
 package com.adatech.ecommerce.repository;
 
-import main.java.com.adatech.ecommerce.model.Cliente;
+import com.adatech.ecommerce.model.Cliente;
 
 
 public interface ClienteRepository extends CrudRepository<Cliente, String> {

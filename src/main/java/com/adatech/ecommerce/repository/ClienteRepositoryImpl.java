@@ -1,6 +1,6 @@
 package com.adatech.ecommerce.repository;
 
-import main.java.com.adatech.ecommerce.model.Cliente;
+import com.adatech.ecommerce.model.Cliente;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,11 +13,9 @@ public class ClienteRepositoryImpl implements ClienteRepository {
 
     @Override
     public boolean salvar(Cliente cliente) {
-        if (cliente != null && cliente.getCpf() != null) {
-            clientes.put(cliente.getCpf(), cliente);
-            return true;
-        }
-        return false;
+        if (cliente == null || cliente.getCpf() == null) return false;
+        clientes.put(cliente.getCpf(), cliente);
+        return true;
     }
 
     @Override
@@ -25,10 +23,12 @@ public class ClienteRepositoryImpl implements ClienteRepository {
         return new ArrayList<>(clientes.values());
     }
 
-    @Override
-    public Cliente buscarPorId(String id) {
+   /* @Override
+    public Cliente buscarPorId(int id) {
+
         return clientes.get(id);
     }
+    */
 
     @Override
     public Cliente buscarPorCpf(String cpf) {

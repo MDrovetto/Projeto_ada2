@@ -1,6 +1,6 @@
-package main.java.com.adatech.ecommerce.view;
+package com.adatech.ecommerce.view;
 
-import main.java.com.adatech.ecommerce.controller.ProdutoController;
+import com.adatech.ecommerce.controller.ProdutoController;
 import java.util.Scanner;
 
 /**

@@ -1,12 +1,12 @@
-package main.java.com.adatech.ecommerce.service;
+package com.adatech.ecommerce.service;
 
-import main.java.com.adatech.ecommerce.model.Pedido;
-import main.java.com.adatech.ecommerce.repository.ClienteRepository;
-import main.java.com.adatech.ecommerce.repository.ClienteRepositoryImpl;
-import main.java.com.adatech.ecommerce.repository.PedidoRepository;
-import main.java.com.adatech.ecommerce.repository.PedidoRepositoryImpl;
-import main.java.com.adatech.ecommerce.repository.ProdutoRepository;
-import main.java.com.adatech.ecommerce.repository.ProdutoRepositoryImpl;
+import com.adatech.ecommerce.model.Pedido;
+import com.adatech.ecommerce.repository.ClienteRepository;
+import com.adatech.ecommerce.repository.ClienteRepositoryImpl;
+import com.adatech.ecommerce.repository.PedidoRepository;
+import com.adatech.ecommerce.repository.PedidoRepositoryImpl;
+import com.adatech.ecommerce.repository.ProdutoRepository;
+import com.adatech.ecommerce.repository.ProdutoRepositoryImpl;
 
 import java.util.List;
 

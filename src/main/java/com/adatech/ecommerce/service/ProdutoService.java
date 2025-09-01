@@ -1,6 +1,6 @@
-package main.java.com.adatech.ecommerce.service;
+package com.adatech.ecommerce.service;
 
-import main.java.com.adatech.ecommerce.model.Produto;
+import com.adatech.ecommerce.model.Produto;
 
 import java.util.List;
 

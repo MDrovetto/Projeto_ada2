@@ -1,4 +1,4 @@
-package main.java.com.adatech.ecommerce.service;
+package com.adatech.ecommerce.service;
 
 /**
  * Interface para serviços de notificação.
