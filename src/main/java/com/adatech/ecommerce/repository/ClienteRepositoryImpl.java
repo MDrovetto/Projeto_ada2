@@ -13,7 +13,9 @@ public class ClienteRepositoryImpl implements ClienteRepository {
 
     @Override
     public boolean salvar(Cliente cliente) {
-        if (cliente == null || cliente.getCpf() == null) return false;
+
+        if (cliente == null || cliente.getCpf() == null) 
+        return false;
         clientes.put(cliente.getCpf(), cliente);
         return true;
     }
@@ -22,10 +24,9 @@ public class ClienteRepositoryImpl implements ClienteRepository {
     public List<Cliente> listarTodos() {
         return new ArrayList<>(clientes.values());
     }
-
+  
    /* @Override
     public Cliente buscarPorId(int id) {
-
         return clientes.get(id);
     }
     */
