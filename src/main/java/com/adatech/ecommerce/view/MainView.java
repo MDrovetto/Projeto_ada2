@@ -1,11 +1,9 @@
-package com.adatech.ecommerce.view;
+package main.java.com.adatech.ecommerce.view;
 
 import main.java.com.adatech.ecommerce.controller.ClienteController;
 import main.java.com.adatech.ecommerce.controller.PedidoController;
 import main.java.com.adatech.ecommerce.controller.ProdutoController;
-import main.java.com.adatech.ecommerce.view.ClienteView;
-import main.java.com.adatech.ecommerce.view.PedidoView;
-import main.java.com.adatech.ecommerce.view.ProdutoView;
+
 
 import java.util.Scanner;
 
