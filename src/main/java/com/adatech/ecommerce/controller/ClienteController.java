@@ -1,9 +1,8 @@
-package main.java.com.adatech.ecommerce.controller;
+package com.adatech.ecommerce.controller;
 
-import main.java.com.adatech.ecommerce.model.Cliente;
-import main.java.com.adatech.ecommerce.service.ClienteService;
-import main.java.com.adatech.ecommerce.service.ClienteServiceImpl;
-
+import com.adatech.ecommerce.model.Cliente;
+import com.adatech.ecommerce.service.ClienteService;
+import com.adatech.ecommerce.service.ClienteServiceImpl;
 import java.util.List;
 
 /**
@@ -27,27 +26,26 @@ public class ClienteController {
     }
 
     public void cadastrarCliente(Cliente cliente) {
-        // TODO: Chamar o serviço para cadastrar o cliente
+        clienteService.cadastrarCliente(cliente);
         // chama cadastrarCliente da classe ClienteServiceImpl que implementa a interface clienteService
         clienteService.cadastrarCliente(cliente);
     }
 
-    public void atualizarCliente(Cliente cliente) {
-        // TODO: Chamar o serviço para atualizar o cliente
+    public boolean atualizarCliente(Cliente cliente) {
         // chama atualizarCliente da classe ClienteServiceImpl que implementa a interface clienteService
-        clienteService.atualizarCliente(cliente);
+        return clienteService.atualizarCliente(cliente);
     }
 
     public List<Cliente> listarClientes() {
-        // TODO: Chamar o serviço para listar os clientes
         // chama listarClientes da classe ClienteServiceImpl que implementa a interface clienteService
         return clienteService.listarClientes();
     }
 
-    public Cliente buscarClientePorCpf(String cpf) {
-        // TODO: Chamar o serviço para buscar o cliente por CPF
+    public Cliente buscarPorCpf(String cpf) {
         // chama buscarClientePorCpf da classe ClienteServiceImpl que implementa a interface clienteService
         return clienteService.buscarClientePorCpf(cpf);
     }
 }
 
+   // public Cliente buscarPorId(int id) {
+       // return clienteService.buscarClientePorId(id); }

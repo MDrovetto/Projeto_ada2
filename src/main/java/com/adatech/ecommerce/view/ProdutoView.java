@@ -1,8 +1,8 @@
-package main.java.com.adatech.ecommerce.view;
+package com.adatech.ecommerce.view;
 
-import main.java.com.adatech.ecommerce.controller.ProdutoController;
-import main.java.com.adatech.ecommerce.model.Produto;
 
+import com.adatech.ecommerce.controller.ProdutoController;
+import com.adatech.ecommerce.model.Produto;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Scanner;

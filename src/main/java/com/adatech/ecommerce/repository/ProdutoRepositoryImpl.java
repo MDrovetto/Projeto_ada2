@@ -1,8 +1,7 @@
 package com.adatech.ecommerce.repository;
 
-import main.java.com.adatech.ecommerce.model.Pedido;
-import main.java.com.adatech.ecommerce.model.Produto;
-
+import com.adatech.ecommerce.model.Pedido;
+import com.adatech.ecommerce.model.Produto;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

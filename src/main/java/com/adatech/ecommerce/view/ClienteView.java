@@ -1,8 +1,7 @@
-package main.java.com.adatech.ecommerce.view;
+package com.adatech.ecommerce.view;
 
-import main.java.com.adatech.ecommerce.controller.ClienteController;
-import main.java.com.adatech.ecommerce.model.Cliente;
-
+import com.adatech.ecommerce.controller.ClienteController;
+import com.adatech.ecommerce.model.Cliente;
 import java.util.List;
 import java.util.Scanner;
 
@@ -25,9 +24,11 @@ public class ClienteView {
         this.clienteController = clienteController;
         this.scanner = scanner;
     }
-
+// TODO: Decidir a versão com ID ou sem (Com ID precisa modificar os pacotes antes de implementar)
     public void exibirMenu() {
-        // TODO: Implementar o loop do menu de clientes
+   
+/*<<<<<<< fernando
+        
         int opcao;
         do {
             System.out.println("\n--- Menu de Clientes ---");
@@ -138,6 +139,84 @@ public class ClienteView {
         clienteController.atualizarCliente(clienteAtualizado);
         System.out.println("Cliente atualizado com sucesso!");
     }
+*/
+
+        while (true) {
+            System.out.println("\n------Menu Clientes------");
+            System.out.println("(1) Cadastrar Clientes");
+            System.out.println("(2) Atualizar dados de Clientes");
+            System.out.println("(3) Listar todos os Clientes");
+            System.out.println("(4) Buscar Cliente por CPF");
+            System.out.println("(5) Voltar");
+            System.out.println("Escolha uma opção acima:");
+
+            String opcao = scanner.nextLine().trim();
+            switch (opcao) {
+                case "1":
+                    cadastrarCliente();
+                    break;
+                case "2":
+                     atualizarCliente();
+                     break;
+                case "3":
+                    listarClientes();
+                    break;
+                case "4":
+                    buscarClientePorCpf();
+                    break;
+                case "5":
+                    return;
+                default:
+                    System.out.println("\nOpção inválida, tente novamente.");
+
+            }
+
+        }
+    }
+
+    private void cadastrarCliente() {
+        System.out.println("\nCadastrar Clientes");
+        System.out.println("Nome: ");
+        String nome= scanner.nextLine().trim();
+        System.out.println("CPF: ");
+        String cpf= scanner.nextLine().trim();
+        System.out.println("Email: ");
+        String email= scanner.nextLine().trim();
+        System.out.println("Endereço: ");
+        String endereco= scanner.nextLine().trim();
+
+     Cliente cliente = new Cliente(nome, cpf, email, endereco);
+     clienteController.cadastrarCliente(cliente);
+     System.out.println("Cliente cadastrado.");
+    }
+
+    private void atualizarCliente() {
+
+        System.out.println("\nAtualizar Cliente");
+        System.out.print("CPF do cliente: ");
+        String cpf = scanner.nextLine().trim();
+
+        Cliente existente = clienteController.buscarPorCpf(cpf);
+        if (existente == null) {
+            System.out.println("Cliente não encontrado. Tente novamente.");
+             return;
+        }
+
+        System.out.print("Novo nome: ");
+        String nome = scanner.nextLine().trim();
+        if (!nome.isBlank()) existente.setNome(nome);
+
+        System.out.print("Novo email: ");
+        String email = scanner.nextLine().trim();
+        if (!email.isBlank()) existente.setEmail(email);
+
+        System.out.print("Novo endereço: ");
+        String endereco = scanner.nextLine().trim();
+        if (!endereco.isBlank()) existente.setEndereco(endereco);
+
+        boolean ok = clienteController.atualizarCliente(existente);
+        System.out.println(ok ? "Cliente atualizado com sucesso." : "Não foi possível atualizar os dados.");
+        }
 
     private void listarClientes() {
         // TODO: Implementar a lógica para chamar o controller e exibir a lista

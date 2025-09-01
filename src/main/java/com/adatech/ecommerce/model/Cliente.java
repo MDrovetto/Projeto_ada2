@@ -1,29 +1,29 @@
-package main.java.com.adatech.ecommerce.model;
+package com.adatech.ecommerce.model;
 
 public class Cliente {
 
-        private int id;
+        //private int id;
         private String nome;
         private String cpf;
         private String email;
         private String endereco;
 
-        public Cliente(int id, String nome, String cpf, String email, String endereco) {
-            this.id = id;
+        public Cliente( String nome, String cpf, String email, String endereco) {
+            //this.id = id;
             this.nome = nome;
             this.cpf = cpf;
             this.email = email;
             this.endereco = endereco;
         }
 
-        public int getId() {
+        /*public int getId() {
             return id;
         }
 
         public void setId(int id) {
             this.id = id;
         }
-
+*/
         public String getNome() {
             return nome;
         }
@@ -59,7 +59,7 @@ public class Cliente {
         @Override
         public String toString() {
             return "Cliente{" +
-                    "id=" + id +
+             //       "id=" + id +
                     ", nome='" + nome + '\'' +
                     ", cpf='" + cpf + '\'' +
                     ", email='" + email + '\'' +

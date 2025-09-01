@@ -1,7 +1,6 @@
-package main.java.com.adatech.ecommerce.service;
+package com.adatech.ecommerce.service;
 
-import main.java.com.adatech.ecommerce.model.Cliente;
-
+import com.adatech.ecommerce.model.Cliente;
 import java.util.List;
 
 /**
@@ -16,8 +15,15 @@ import java.util.List;
  */
 public interface ClienteService {
     boolean cadastrarCliente(Cliente cliente);
-    boolean atualizarCliente(Cliente cliente);
+    boolean atualizarCliente(Cliente cliente){
+     if (cliente == null || cliente.getCpf() == null || cliente.getCpf().isBlank())
+         return false;
+     if (clienteRepository.buscarPorCpf(cliente.getCpf()) == null)
+         return false;
+         return clienteRepository.salvar(cliente);
+}
     List<Cliente> listarClientes();
     Cliente buscarClientePorCpf(String cpf);
+  //  Cliente buscarClientePorId(int id);
 }
 

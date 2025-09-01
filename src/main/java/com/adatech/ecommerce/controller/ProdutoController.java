@@ -1,9 +1,8 @@
-package main.java.com.adatech.ecommerce.controller;
+package com.adatech.ecommerce.controller;
 
-import main.java.com.adatech.ecommerce.model.Produto;
-import  main.java.com.adatech.ecommerce.service.ProdutoService;
-import  main.java.com.adatech.ecommerce.service.ProdutoServiceImpl;
-
+import com.adatech.ecommerce.model.Produto;
+import com.adatech.ecommerce.service.ProdutoService;
+import com.adatech.ecommerce.service.ProdutoServiceImpl;
 import java.util.List;
 
 /**
@@ -44,10 +43,11 @@ public class ProdutoController {
         return produtoService.listarProdutos();
     }
 
-    public Produto buscarProdutoPorId(int id) {
-        // TODO: Chamar o serviço para buscar o produto por
+
+  /*  public Produto buscarProdutoPorId(int id) {
         // chama buscarProdutoPorId da classe ProdutoServiceImpl que implementa a interface ProdutoService
         return produtoService.buscarProdutoPorId(id);
-    }
+    } */
+    
 }
 
