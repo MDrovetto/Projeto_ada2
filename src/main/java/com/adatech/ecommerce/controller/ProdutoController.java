@@ -27,21 +27,27 @@ public class ProdutoController {
     }
 
     public void cadastrarProduto(Produto produto) {
-        // TODO: Chamar o serviço para cadastrar o produto
+        // TODO: Chamar o serviço para cadastrar o
+        // chama cadastrarProduto da classe ProdutoServiceImpl que implementa a interface ProdutoService
+        produtoService.cadastrarProduto(produto);
     }
 
     public void atualizarProduto(Produto produto) {
         // TODO: Chamar o serviço para atualizar o produto
+        // chama atualizarProduto da classe ProdutoServiceImpl que implementa a interface ProdutoService
+        produtoService.atualizarProduto(produto);
     }
 
     public List<Produto> listarProdutos() {
         // TODO: Chamar o serviço para listar os produtos
-        return null;
+        // chama listarProdutos() da classe ProdutoServiceImpl que implementa a interface ProdutoService
+        return produtoService.listarProdutos();
     }
 
     public Produto buscarProdutoPorId(int id) {
-        // TODO: Chamar o serviço para buscar o produto por ID
-        return null;
+        // TODO: Chamar o serviço para buscar o produto por
+        // chama buscarProdutoPorId da classe ProdutoServiceImpl que implementa a interface ProdutoService
+        return produtoService.buscarProdutoPorId(id);
     }
 }
 

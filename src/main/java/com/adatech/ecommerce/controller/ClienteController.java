@@ -28,20 +28,26 @@ public class ClienteController {
 
     public void cadastrarCliente(Cliente cliente) {
         // TODO: Chamar o serviço para cadastrar o cliente
+        // chama cadastrarCliente da classe ClienteServiceImpl que implementa a interface clienteService
+        clienteService.cadastrarCliente(cliente);
     }
 
     public void atualizarCliente(Cliente cliente) {
         // TODO: Chamar o serviço para atualizar o cliente
+        // chama atualizarCliente da classe ClienteServiceImpl que implementa a interface clienteService
+        clienteService.atualizarCliente(cliente);
     }
 
     public List<Cliente> listarClientes() {
         // TODO: Chamar o serviço para listar os clientes
-        return null;
+        // chama listarClientes da classe ClienteServiceImpl que implementa a interface clienteService
+        return clienteService.listarClientes();
     }
 
     public Cliente buscarClientePorCpf(String cpf) {
         // TODO: Chamar o serviço para buscar o cliente por CPF
-        return null;
+        // chama buscarClientePorCpf da classe ClienteServiceImpl que implementa a interface clienteService
+        return clienteService.buscarClientePorCpf(cpf);
     }
 }
 

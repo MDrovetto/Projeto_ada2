@@ -92,7 +92,7 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     public boolean removerItem(int pedidoId, int produtoId) {
         // TODO: Implementar a lógica para remover item
-        Pedido pedido = pedidoRepository.buscarPorId(pedidoId);
+        Pedido pedido = pedidoRepository.buscarPorId(pedidoId); // instância temporariamente um pedido para ver se existe na lista de pedidos
 
         if (pedido == null) {
             return false;
@@ -232,14 +232,14 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     public List<Pedido> listarPedidos() {
         // TODO: Implementar a lógica para listar os pedidos
-        // Delega a responsabilidade de listar os pedidos para o repositório.
+        // Delega a responsabilidade de listar os pedidos para o repositório(pasta repository).
         return pedidoRepository.listarTodos();
     }
 
     @Override
     public Pedido buscarPedidoPorId(int id) {
         // TODO: Implementar a lógica de busca por ID
-        // Delega a responsabilidade de buscar o pedido para o repositório.
+        // Delega a responsabilidade de buscar o pedido para o repositório(pasta repository).
         return pedidoRepository.buscarPorId(id);
     }
 }
