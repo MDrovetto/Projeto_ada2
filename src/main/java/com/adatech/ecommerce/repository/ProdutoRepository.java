@@ -1,4 +1,4 @@
-package main.java.com.adatech.ecommerce.repository;
+package com.adatech.ecommerce.repository;
 
 import main.java.com.adatech.ecommerce.model.Produto;
 
