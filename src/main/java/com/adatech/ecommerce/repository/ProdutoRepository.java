@@ -1,6 +1,6 @@
 package com.adatech.ecommerce.repository;
 
-import main.java.com.adatech.ecommerce.model.Produto;
+import com.adatech.ecommerce.model.Produto;
 
 /**
  * Interface específica para o repositório de Produtos.

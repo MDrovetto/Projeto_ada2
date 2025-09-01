@@ -1,8 +1,8 @@
-package main.java.com.adatech.ecommerce.service;
+package com.adatech.ecommerce.service;
 
-import main.java.com.adatech.ecommerce.model.Cliente;
-import main.java.com.adatech.ecommerce.repository.ClienteRepository;
-import main.java.com.adatech.ecommerce.repository.ClienteRepositoryImpl;
+import com.adatech.ecommerce.model.Cliente;
+import com.adatech.ecommerce.repository.ClienteRepository;
+import com.adatech.ecommerce.repository.ClienteRepositoryImpl;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class ClienteServiceImpl implements ClienteService {
     public boolean atualizarCliente(Cliente cliente) {
         // TODO: Implementar a lógica de atualização
         // Lógica de negócio: verificar se o cliente a ser atualizado existe.
-        Cliente clienteExistente = clienteRepository.buscarPorId(cliente.getCpf());
+    //   Cliente clienteExistente = clienteRepository.buscarPorId(cliente.getCpf());
 
         if (clienteExistente == null) {
             System.err.println("Erro: Cliente não encontrado para atualização.");
