@@ -1,6 +1,6 @@
 package main.java.com.adatech.ecommerce;
 
-import com.adatech.ecommerce.view.MainView;
+import main.java.com.adatech.ecommerce.view.MainView;
 
 /**
  * Ponto de entrada principal da aplicação de E-Commerce.
