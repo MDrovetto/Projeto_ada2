@@ -1,7 +1,7 @@
 package com.adatech.ecommerce.repository;
 
+import com.adatech.ecommerce.model.Pedido;
 import com.adatech.ecommerce.model.Produto;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,11 +17,11 @@ import java.util.Map;
  *  - O método buscarPorId deve retornar o produto correspondente.
  */
 public class ProdutoRepositoryImpl implements ProdutoRepository {
-    private static final Map<Integer, Produto> produtos = new HashMap<>();
+    protected static final Map<Integer, Produto> produtos = new HashMap<>();
     private static int proximoId = 0; // mudei para zero se ñ precisaria de mais um if no metodo salvar()
 
     @Override
-    public void salvar(Produto produto) {
+    public Pedido salvar(Produto produto) {
         // TODO: Implementar a lógica para salvar ou atualizar o produto
         // Lógica de negócio: se o produto não tem um ID, é um novo produto.
         if (produto.getId() == 0) { // na classe produto procura pelo ID caso ñ exista retorna 0 que retorna true = produto novo
@@ -30,6 +30,7 @@ public class ProdutoRepositoryImpl implements ProdutoRepository {
         }
         // Usa o método put do Map para adicionar ou atualizar o produto com base no seu ID.
         produtos.put(produto.getId(), produto);
+        return null;
     }
 
     @Override
