@@ -1,31 +1,11 @@
 package com.adatech.ecommerce.service;
 
-import com.adatech.ecommerce.model.Pedido;
-import com.adatech.ecommerce.repository.ClienteRepository;
-import com.adatech.ecommerce.repository.ClienteRepositoryImpl;
-import com.adatech.ecommerce.repository.PedidoRepository;
-import com.adatech.ecommerce.repository.PedidoRepositoryImpl;
-import com.adatech.ecommerce.repository.ProdutoRepository;
-import com.adatech.ecommerce.repository.ProdutoRepositoryImpl;
+import com.adatech.ecommerce.model.*;
+import com.adatech.ecommerce.repository.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-/**.
- * Implementação dos serviços relacionados a Pedidos.
- * Contém a lógica de negócio para a entidade Pedido.
- * TODO:
- *  - Implementar os métodos da interface PedidoService.
- *  - No construtor, instanciar os repositórios necessários (Pedido, Cliente, Produto) e o serviço de notificação.
- *  - Implementar as regras de negócio para cada operação, como:
- *    - criarPedido: verificar se o cliente existe.
- *    - adicionarItem: verificar se o pedido e o produto existem, e se o pedido está com status "ABERTO".
- *    - removerItem: verificar se o pedido está com status "ABERTO".
- *    - alterarQuantidadeItem: verificar se o pedido está com status "ABERTO".
- *    - finalizarPedido: verificar se o pedido tem itens e valor > 0, alterar status e notificar cliente.
- *    - pagarPedido: verificar se o status é "AGUARDANDO_PAGAMENTO", alterar status e notificar cliente.
- *    - entregarPedido: verificar se o status é "PAGO", alterar status e notificar cliente.
- */
 public class PedidoServiceImpl implements PedidoService {
 
     private final PedidoRepository pedidoRepository;
@@ -42,24 +22,19 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Override
     public Pedido criarPedido(String cpfCliente) {
-        // TODO: Implementar a lógica de criação de pedido
         // Lógica de negócio: verifica se o cliente existe.
         Cliente cliente = clienteRepository.buscarPorCpf(cpfCliente);
         if (cliente == null) {
             System.err.println("Erro: Cliente não encontrado para criar o pedido.");
             return null;
         }
-
-        // TODO: Em uma implementação real, o ID do pedido seria gerado pelo banco de dados.
         // Aqui, um ID temporário é usado para o exemplo.
         Pedido novoPedido = new Pedido(0, cliente, LocalDate.now());
-
         return pedidoRepository.salvar(novoPedido);
     }
 
     @Override
     public boolean adicionarItem(int pedidoId, int produtoId, int quantidade, double precoVenda) {
-        // TODO: Implementar a lógica para adicionar item
         // Busca o pedido e o produto nos repositórios.
         Pedido pedido = pedidoRepository.buscarPorId(pedidoId);
         Produto produto = produtoRepository.buscarPorId(produtoId);
@@ -90,9 +65,7 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Override
     public boolean removerItem(int pedidoId, int produtoId) {
-        // TODO: Implementar a lógica para remover item
         Pedido pedido = pedidoRepository.buscarPorId(pedidoId); // instância temporariamente um pedido para ver se existe na lista de pedidos
-
         if (pedido == null) {
             return false;
         }
@@ -210,7 +183,6 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Override
     public boolean entregarPedido(int pedidoId) {
-        // TODO: Implementar a lógica para entregar o pedido
         Pedido pedido = pedidoRepository.buscarPorId(pedidoId);
         if (pedido == null) {
             return false;
@@ -230,14 +202,12 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Override
     public List<Pedido> listarPedidos() {
-        // TODO: Implementar a lógica para listar os pedidos
         // Delega a responsabilidade de listar os pedidos para o repositório(pasta repository).
         return pedidoRepository.listarTodos();
     }
 
     @Override
     public Pedido buscarPedidoPorId(int id) {
-        // TODO: Implementar a lógica de busca por ID
         // Delega a responsabilidade de buscar o pedido para o repositório(pasta repository).
         return pedidoRepository.buscarPorId(id);
     }

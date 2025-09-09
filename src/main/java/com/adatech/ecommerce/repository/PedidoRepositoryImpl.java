@@ -5,17 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 
-/**
- * Implementação em memória do repositório de Pedidos.
- * TODO:
- *  - Implementar os métodos da interface PedidoRepository.
- *  - Utilizar um Map<Integer, Pedido> para armazenar os pedidos, usando o ID como chave.
- *  - O método salvar deve adicionar um novo pedido ou atualizar um existente.
- *  - O método listarTodos deve retornar uma lista com todos os pedidos.
- *  - O método buscarPorId deve retornar o pedido correspondente.
- */
 public class PedidoRepositoryImpl implements PedidoRepository {
     private static final Map<Integer, Pedido> pedidos = new HashMap<>();
     private static int proximoId = 1;
@@ -41,11 +33,14 @@ public class PedidoRepositoryImpl implements PedidoRepository {
     }
 
     @Override
+    public List<Pedido> buscarPorCliente(String cpfCliente) {
+        return pedidos.values().stream()
+                .filter(p -> p.getCliente().getCpf().equals(cpfCliente))
+                .collect(Collectors.toList()); // cria uma lista com os pedidos
+    }
+
+    @Override
     public Pedido buscarPorId(Integer id) {
-        // TODO: Implementar a lógica para buscar pedido por ID
-        // Busca o pedido no Map usando o ID como chave.
-        // O método get() do Map retorna o objeto ou 'null' se a chave não for encontrada.
-        // É importante que o código que chamar este método trate a possibilidade de um retorno null.
         return pedidos.get(id);
 
     }

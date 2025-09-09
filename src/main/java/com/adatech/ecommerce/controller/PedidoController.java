@@ -6,15 +6,6 @@ import com.adatech.ecommerce.model.Pedido;
 
 import java.util.List;
 
-/**
- * Controller para gerenciar as operações relacionadas a Pedidos.
- * Faz a ponte entre a View e o Service.
- * TODO:
- *  - No construtor, instanciar o PedidoService.
- *  - Criar métodos para cada uma das operações de negócio definidas no PedidoService.
- *  - Os métodos devem chamar as operações correspondentes no PedidoService e retornar
- *    os resultados para a View.
- */
 public class PedidoController {
 
     private final PedidoService pedidoService;

@@ -5,18 +5,6 @@ import com.adatech.ecommerce.service.ProdutoService;
 import com.adatech.ecommerce.service.ProdutoServiceImpl;
 import java.util.List;
 
-/**
- * Controller para gerenciar as operações relacionadas a Produtos.
- * Faz a ponte entre a View e o Service.
- * TODO:
- *  - No construtor, instanciar o ProdutoService.
- *  - Criar métodos para:
- *    - cadastrarProduto(produto): void
- *    - atualizarProduto(produto): void
- *    - listarProdutos(): List<Produto>
- *    - buscarProdutoPorId(id): Produto
- *  - Os métodos devem chamar as operações correspondentes no ProdutoService.
- */
 public class ProdutoController {
 
     private final ProdutoService produtoService;
@@ -26,28 +14,24 @@ public class ProdutoController {
     }
 
     public void cadastrarProduto(Produto produto) {
-        // TODO: Chamar o serviço para cadastrar o
         // chama cadastrarProduto da classe ProdutoServiceImpl que implementa a interface ProdutoService
         produtoService.cadastrarProduto(produto);
     }
 
     public void atualizarProduto(Produto produto) {
-        // TODO: Chamar o serviço para atualizar o produto
         // chama atualizarProduto da classe ProdutoServiceImpl que implementa a interface ProdutoService
         produtoService.atualizarProduto(produto);
     }
 
     public List<Produto> listarProdutos() {
-        // TODO: Chamar o serviço para listar os produtos
         // chama listarProdutos() da classe ProdutoServiceImpl que implementa a interface ProdutoService
         return produtoService.listarProdutos();
     }
 
-
-  /*  public Produto buscarProdutoPorId(int id) {
+    public Produto buscarProdutoPorId(int id) {
         // chama buscarProdutoPorId da classe ProdutoServiceImpl que implementa a interface ProdutoService
         return produtoService.buscarProdutoPorId(id);
-    } */
+    }
     
 }
 
