@@ -1,20 +1,10 @@
-package main.java.com.adatech.ecommerce.view;
+package com.adatech.ecommerce.view;
 
-import main.java.com.adatech.ecommerce.controller.ClienteController;
-import main.java.com.adatech.ecommerce.controller.PedidoController;
-import main.java.com.adatech.ecommerce.controller.ProdutoController;
-
-
+import com.adatech.ecommerce.controller.ClienteController;
+import com.adatech.ecommerce.controller.PedidoController;
+import com.adatech.ecommerce.controller.ProdutoController;
 import java.util.Scanner;
 
-/**
- * View principal que exibe o menu principal da aplicação.
- * TODO:
- *  - Criar um método para exibir o menu principal (Gerenciar Clientes, Gerenciar Produtos, Gerenciar Pedidos, Sair).
- *  - Criar um método para iniciar a interação com o usuário, lendo a opção escolhida.
- *  - Com base na opção, instanciar e chamar a view correspondente (ClienteView, ProdutoView, PedidoView).
- *  - Manter o menu em um loop até que o usuário escolha a opção "Sair".
- */
 public class MainView {
 
      private final Scanner scanner;

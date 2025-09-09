@@ -1,10 +1,7 @@
 package com.adatech.ecommerce;
 
-import main.java.com.adatech.ecommerce.view.MainView;
+import com.adatech.ecommerce.view.MainView;
 
-/**
- * Ponto de entrada principal da aplicação de E-Commerce.
- */
 public class Main {
     public static void main(String[] args) {
         // Cria uma instância da View principal e inicia a aplicação

@@ -1,22 +1,11 @@
 package com.adatech.ecommerce.view;
 
-
 import com.adatech.ecommerce.controller.ProdutoController;
 import com.adatech.ecommerce.model.Produto;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * View para interação com o usuário para o gerenciamento de Produtos.
- * TODO:
- *  - No construtor, receber o ProdutoController.
- *  - Criar um método para exibir o menu de produtos (Cadastrar, Atualizar, Listar, Buscar por ID, Voltar).
- *  - Criar métodos para cada uma das opções do menu, que irão:
- *    - Solicitar os dados necessários ao usuário (nome, descrição, preço, etc.).
- *    - Chamar o método correspondente no ProdutoController.
- *    - Exibir o resultado da operação para o usuário (sucesso, erro, dados do produto, etc.).
- */
 public class ProdutoView {
 
     private final ProdutoController produtoController;
@@ -28,7 +17,6 @@ public class ProdutoView {
     }
 
     public void exibirMenu() {
-        // TODO: Implementar o loop do menu de produtos
         int opcao;
         do {
             System.out.println("\n--- Menu de Produtos ---");
@@ -65,7 +53,6 @@ public class ProdutoView {
     }
 
     private void cadastrarProduto() {
-        // TODO: Implementar a lógica para coletar dados e chamar o
         System.out.println("\n--- Cadastro de Produto ---");
         System.out.print("Digite o nome do produto: ");
         String nome = scanner.nextLine();
@@ -122,7 +109,6 @@ public class ProdutoView {
     }
 
     private void listarProdutos() {
-        // TODO: Implementar a lógica para chamar o controller e exibir a lista
         System.out.println("\n--- Lista de Produtos ---");
         List<Produto> produtos = produtoController.listarProdutos();
         if (produtos.isEmpty()) {
@@ -135,7 +121,6 @@ public class ProdutoView {
     }
 
     private void buscarProdutoPorId() {
-        // TODO: Implementar a lógica para coletar ID e chamar o controller
         System.out.println("\n--- Busca de Produto por ID ---");
         System.out.print("Digite o ID do produto: ");
         int id = scanner.nextInt();

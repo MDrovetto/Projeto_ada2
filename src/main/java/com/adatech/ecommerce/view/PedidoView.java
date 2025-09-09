@@ -1,21 +1,11 @@
-package main.java.com.adatech.ecommerce.view;
+package com.adatech.ecommerce.view;
 
-import main.java.com.adatech.ecommerce.controller.PedidoController;
-import main.java.com.adatech.ecommerce.model.Pedido;
+import com.adatech.ecommerce.controller.PedidoController;
+import com.adatech.ecommerce.model.Pedido;
 
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * View para interação com o usuário para o gerenciamento de Pedidos.
- * TODO:
- *  - No construtor, receber o PedidoController.
- *  - Criar um método para exibir o menu principal de pedidos (Criar Pedido, Gerenciar Pedido Existente, Listar Pedidos, Voltar).
- *  - Criar um método para gerenciar um pedido existente, com opções como:
- *    - Adicionar Item, Remover Item, Alterar Quantidade, Finalizar Pedido, Pagar, Marcar como Entregue.
- *  - Os métodos devem coletar os dados necessários do usuário e chamar o PedidoController.
- *  - Exibir os resultados e o status atualizado do pedido para o usuário.
- */
 public class PedidoView {
 
     private final PedidoController pedidoController;
@@ -27,7 +17,7 @@ public class PedidoView {
     }
 
     public void exibirMenu() {
-        // TODO: Implementar o loop do menu de pedidos
+        //loop do menu de pedidos
         int opcao;
         do {
             System.out.println("\n--- Menu de Pedidos ---");
@@ -60,7 +50,7 @@ public class PedidoView {
     }
 
     private void criarPedido() {
-        // TODO: Implementar a lógica para coletar CPF do cliente e chamar o controller
+        //lógica para coletar CPF do cliente e chamar o controller
         System.out.println("\n--- Criar Pedido ---");
         System.out.print("Digite o CPF do cliente para o novo pedido: ");
         String cpfCliente = scanner.nextLine();
@@ -75,7 +65,7 @@ public class PedidoView {
     }
 
     private void gerenciarPedido() {
-        // TODO: Implementar a lógica para selecionar um pedido e exibir o submenu de gerenciamento
+        //lógica para selecionar um pedido e exibir o submenu de gerenciamento
         System.out.println("\n--- Gerenciar Pedido Existente ---");
         System.out.print("Digite o ID do pedido que deseja gerenciar: ");
         int idPedido = scanner.nextInt();
@@ -153,7 +143,7 @@ public class PedidoView {
     }
 
     private void listarPedidos() {
-        // TODO: Implementar a lógica para chamar o controller e exibir a lista de pedidos
+        //lógica para chamar o controller e exibir a lista de pedidos
         System.out.println("\n--- Lista de Pedidos ---");
         List<Pedido> pedidos = pedidoController.listarPedidos();
         if (pedidos.isEmpty()) {
