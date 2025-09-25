@@ -6,7 +6,8 @@ Projeto de estudo em Java (console) para simular um e-commerce: cadastro de clie
 3-Adequações ao OCP (injeção por construtor e remoção de new desnecessário dentro de services);
 4- Preparação para Cupom e Regras de Desconto;
 
- **O que já foi feito**
+**O que já foi feito**
+
 ✅ Pacote de exceções de domínio com.adatech.ecommerce.exception com:
 ValidationException (erros de entrada/validação)
 NotFoundException (entidades não encontradas)
