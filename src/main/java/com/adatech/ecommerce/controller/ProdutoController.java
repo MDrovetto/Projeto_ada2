@@ -5,33 +5,29 @@ import com.adatech.ecommerce.service.ProdutoService;
 import com.adatech.ecommerce.service.ProdutoServiceImpl;
 import java.util.List;
 
-public class ProdutoController {
+import com.adatech.ecommerce.repository.ProdutoRepositoryImpl;
 
+public class ProdutoController {
     private final ProdutoService produtoService;
 
     public ProdutoController() {
-        this.produtoService = new ProdutoServiceImpl();
+        this.produtoService = new ProdutoServiceImpl(new ProdutoRepositoryImpl());
     }
 
     public void cadastrarProduto(Produto produto) {
-        // chama cadastrarProduto da classe ProdutoServiceImpl que implementa a interface ProdutoService
         produtoService.cadastrarProduto(produto);
     }
 
     public void atualizarProduto(Produto produto) {
-        // chama atualizarProduto da classe ProdutoServiceImpl que implementa a interface ProdutoService
         produtoService.atualizarProduto(produto);
     }
 
     public List<Produto> listarProdutos() {
-        // chama listarProdutos() da classe ProdutoServiceImpl que implementa a interface ProdutoService
         return produtoService.listarProdutos();
     }
 
     public Produto buscarProdutoPorId(int id) {
-        // chama buscarProdutoPorId da classe ProdutoServiceImpl que implementa a interface ProdutoService
         return produtoService.buscarProdutoPorId(id);
     }
-    
 }
 

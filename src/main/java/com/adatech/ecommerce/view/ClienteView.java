@@ -98,7 +98,6 @@ public class ClienteView {
         }
 
     private void listarClientes() {
-        // TODO: Implementar a lógica para chamar o controller e exibir a lista
         System.out.println("\n--- Lista de Clientes ---");
         List<Cliente> clientes = clienteController.listarClientes();
         if (clientes.isEmpty()) { // isEmpty verifica se list tem elementos.
@@ -111,7 +110,6 @@ public class ClienteView {
     }
 
     private void buscarClientePorCpf() {
-        // TODO: Implementar a lógica para coletar CPF e chamar o controller
         System.out.println("\n--- Busca de Cliente por CPF ---");
         System.out.print("Digite o CPF: ");
         String cpf = scanner.nextLine();

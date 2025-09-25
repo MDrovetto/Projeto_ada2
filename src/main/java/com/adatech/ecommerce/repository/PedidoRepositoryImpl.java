@@ -14,21 +14,16 @@ public class PedidoRepositoryImpl implements PedidoRepository {
 
     @Override
     public Pedido salvar(Pedido pedido) {
-        // TODO: Implementar a lógica para salvar ou atualizar o
-        // Lógica de negócio: se o pedido não tem um ID, é um novo pedido.
         if (pedido.getId() == 0) {
-            // Atribui um novo ID e incrementa o contador.
             pedido.setId(proximoId++);
         }
-        // Usa o método put do Map para adicionar ou atualizar o pedido com base no seu ID.
+
         pedidos.put(pedido.getId(), pedido);
         return pedido;
     }
 
     @Override
     public List<Pedido> listarTodos() {
-        // TODO: Implementar a lógica para retornar a lista de pedidos
-        // Retorna uma nova lista com todos os valores (os objetos Pedido) do Map.
         return new ArrayList<>(pedidos.values());
     }
 

@@ -21,7 +21,7 @@ public class Cliente {
     }
 
     public static Cliente existente(int id, String nome, String cpf, String email, String endereco) {
-        return new Cliente(0, nome, cpf, email, endereco);
+        return new Cliente(id, nome, cpf, email, endereco);
     }
 
     public int getId() {

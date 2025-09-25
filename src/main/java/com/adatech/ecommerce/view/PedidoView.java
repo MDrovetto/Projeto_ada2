@@ -17,7 +17,6 @@ public class PedidoView {
     }
 
     public void exibirMenu() {
-        //loop do menu de pedidos
         int opcao;
         do {
             System.out.println("\n--- Menu de Pedidos ---");
@@ -28,7 +27,7 @@ public class PedidoView {
             System.out.print("Escolha uma opção: ");
 
             opcao = scanner.nextInt();
-            scanner.nextLine(); // Consome a quebra de linha
+            scanner.nextLine();
 
             switch (opcao) {
                 case 1:
@@ -50,7 +49,6 @@ public class PedidoView {
     }
 
     private void criarPedido() {
-        //lógica para coletar CPF do cliente e chamar o controller
         System.out.println("\n--- Criar Pedido ---");
         System.out.print("Digite o CPF do cliente para o novo pedido: ");
         String cpfCliente = scanner.nextLine();
@@ -65,7 +63,6 @@ public class PedidoView {
     }
 
     private void gerenciarPedido() {
-        //lógica para selecionar um pedido e exibir o submenu de gerenciamento
         System.out.println("\n--- Gerenciar Pedido Existente ---");
         System.out.print("Digite o ID do pedido que deseja gerenciar: ");
         int idPedido = scanner.nextInt();
@@ -94,20 +91,17 @@ public class PedidoView {
 
             switch (opcao) {
                 case 1:
-                    // Coleta os dados do novo item
                     System.out.print("Digite o ID do produto: ");
                     int produtoId = scanner.nextInt();
                     System.out.print("Digite a quantidade: ");
                     int quantidade = scanner.nextInt();
                     System.out.print("Digite o preço de venda: ");
                     double precoVenda = scanner.nextDouble();
-                    scanner.nextLine(); // Consome a quebra de linha
+                    scanner.nextLine();
 
-                    // Agora, a chamada passa todos os parâmetros necessários
                     pedidoController.adicionarItem(pedido.getId(), produtoId, quantidade, precoVenda);
                     break;
                 case 2:
-                    // Coleta o ID do produto a ser removido
                     System.out.print("Digite o ID do produto a ser removido: ");
                     int produtoIdRemover = scanner.nextInt();
                     scanner.nextLine();
@@ -115,7 +109,6 @@ public class PedidoView {
                     pedidoController.removerItem(pedido.getId(), produtoIdRemover);
                     break;
                 case 3:
-                    // Coleta o ID do produto e a nova quantidade
                     System.out.print("Digite o ID do produto a ser alterado: ");
                     int produtoIdAlterar = scanner.nextInt();
                     System.out.print("Digite a nova quantidade: ");
@@ -143,7 +136,6 @@ public class PedidoView {
     }
 
     private void listarPedidos() {
-        //lógica para chamar o controller e exibir a lista de pedidos
         System.out.println("\n--- Lista de Pedidos ---");
         List<Pedido> pedidos = pedidoController.listarPedidos();
         if (pedidos.isEmpty()) {
