@@ -14,18 +14,14 @@ public class ClienteController {
     }
     public void cadastrarCliente(Cliente cliente) {
         clienteService.cadastrarCliente(cliente);
-        // chama cadastrarCliente da classe ClienteServiceImpl que implementa a interface clienteService
     }
     public boolean atualizarCliente(Cliente cliente) {
-        // chama atualizarCliente da classe ClienteServiceImpl que implementa a interface clienteService
         return clienteService.atualizarCliente(cliente);
     }
     public List<Cliente> listarClientes() {
-        // chama listarClientes da classe ClienteServiceImpl que implementa a interface clienteService
         return clienteService.listarClientes();
     }
     public Cliente buscarPorCpf(String cpf) {
-        // chama buscarClientePorCpf da classe ClienteServiceImpl que implementa a interface clienteService
         return clienteService.buscarClientePorCpf(cpf);
     }
     public Cliente buscarPorId(int id) {

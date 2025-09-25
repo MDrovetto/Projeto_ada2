@@ -1,5 +1,6 @@
 package com.adatech.ecommerce.view;
 
+
 import com.adatech.ecommerce.controller.ProdutoController;
 import com.adatech.ecommerce.model.Produto;
 import java.math.BigDecimal;
@@ -71,7 +72,6 @@ public class ProdutoView {
     }
 
     private void atualizarProduto() {
-        // TODO: Implementar a lógica para coletar dados e chamar o controller
         System.out.println("\n--- Atualização de Produto ---");
         System.out.print("Digite o ID do produto que deseja atualizar: ");
         int id = scanner.nextInt();
@@ -95,7 +95,6 @@ public class ProdutoView {
             novaDescricao = produtoExistente.getDescricao();
         }
 
-        // Exemplo simples de atualização de estoque
         System.out.print("Digite a nova quantidade em estoque (ou -1 para manter a atual): ");
         int novoEstoque = scanner.nextInt();
         scanner.nextLine();
