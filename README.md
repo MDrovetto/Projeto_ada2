@@ -45,7 +45,7 @@ O que falta (checklist)
 
 - [ ]  Usar total com desconto ao finalizar pedido.
 
-- [ ]  Validação de entrada/CPF, testes unitários, persistência em arquivos
+- [ ]  Validação de entrada/CPF, testes unitários, persistência em arquivos.
 
 >>>>>>>>>>>>>>>>>>> TÉCNICAS DE PROGRAMAÇÃO<<<<<<<<<<<<<<<<<<
 
