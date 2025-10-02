@@ -1,6 +1,5 @@
 package com.adatech.ecommerce.view;
 
-
 import com.adatech.ecommerce.controller.ProdutoController;
 import com.adatech.ecommerce.model.Produto;
 import java.math.BigDecimal;
@@ -18,7 +17,7 @@ public class ProdutoView {
     }
 
     public void exibirMenu() {
-        int opcao;
+        int opcao = -1;
         do {
             System.out.println("\n--- Menu de Produtos ---");
             System.out.println("1. Cadastrar Produto");
@@ -28,8 +27,16 @@ public class ProdutoView {
             System.out.println("0. Voltar");
             System.out.print("Escolha uma opção: ");
 
-            opcao = scanner.nextInt();
-            scanner.nextLine(); // Consome a quebra de linha
+            // Refatoração com nextLine() + parse
+            String entrada = scanner.nextLine().trim();
+
+            try {
+                opcao = Integer.parseInt(entrada);
+            } catch (NumberFormatException ex) {
+                opcao = -1; // Garante que caia no default
+                System.err.println("Entrada inválida. Por favor, digite apenas o número da opção. Detalhe: " + ex.getMessage());
+                continue; // Volta para o início do loop
+            }
 
             switch (opcao) {
                 case 1:
@@ -59,51 +66,84 @@ public class ProdutoView {
         String nome = scanner.nextLine();
         System.out.print("Digite a descrição: ");
         String descricao = scanner.nextLine();
-        System.out.print("Digite o preço: ");
-        BigDecimal preco = scanner.nextBigDecimal();
-        scanner.nextLine();
+
+        // Refatoração do Preço (BigDecimal)
+        System.out.print("Digite o preço (Ex: 123.45): ");
+        BigDecimal preco = null;
+        try {
+            String precoText = scanner.nextLine().trim().replace(",", "."); // Troca vírgula por ponto
+            preco = new BigDecimal(precoText);
+        } catch (NumberFormatException ex) {
+            System.err.println("Erro: Preço inválido. O preço deve ser um número. Detalhe: " + ex.getMessage());
+            return;
+        }
+
+        // Refatoração do Estoque (int)
         System.out.print("Digite o estoque inicial: ");
-        int estoque = scanner.nextInt();
-        scanner.nextLine();
+        int estoque = 0;
+        try {
+            estoque = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException ex) {
+            System.err.println("Erro: Estoque inválido. O estoque deve ser um número inteiro. Detalhe: " + ex.getMessage());
+            return;
+        }
 
         Produto novoProduto = new Produto(0, nome, descricao, preco, estoque);
         produtoController.cadastrarProduto(novoProduto);
+        System.out.println("Produto cadastrado com sucesso!");
     }
 
     private void atualizarProduto() {
         System.out.println("\n--- Atualização de Produto ---");
         System.out.print("Digite o ID do produto que deseja atualizar: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
 
-        Produto produtoExistente = produtoController.buscarProdutoPorId(id);
-        if (produtoExistente == null) {
-            System.err.println("Erro: Produto não encontrado.");
+        // Refatoração do ID (int)
+        int id;
+        try {
+            id = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException ex) {
+            System.err.println("Erro: ID inválido. O ID deve ser um número inteiro. Detalhe: " + ex.getMessage());
             return;
         }
 
-        System.out.print("Digite o novo nome (ou 'n' para manter o atual): ");
+        Produto produtoExistente = produtoController.buscarProdutoPorId(id);
+        if (produtoExistente == null) {
+            System.err.println("Erro: Produto não encontrado com o ID " + id + ".");
+            return;
+        }
+
+        System.out.println("Produto atual: " + produtoExistente.getNome());
+        System.out.print("Digite o novo nome (deixe vazio para manter): ");
         String novoNome = scanner.nextLine();
-        if (novoNome.equalsIgnoreCase("n")) {
+        if (novoNome.isBlank()) {
             novoNome = produtoExistente.getNome();
         }
 
-        System.out.print("Digite a nova descrição (ou 'n' para manter a atual): ");
+        System.out.println("Descrição atual: " + produtoExistente.getDescricao());
+        System.out.print("Digite a nova descrição (deixe vazio para manter): ");
         String novaDescricao = scanner.nextLine();
-        if (novaDescricao.equalsIgnoreCase("n")) {
+        if (novaDescricao.isBlank()) {
             novaDescricao = produtoExistente.getDescricao();
         }
 
-        System.out.print("Digite a nova quantidade em estoque (ou -1 para manter a atual): ");
-        int novoEstoque = scanner.nextInt();
-        scanner.nextLine();
-        if (novoEstoque == -1) {
-            novoEstoque = produtoExistente.getEstoque();
+        // Refatoração do Estoque (int)
+        System.out.println("Estoque atual: " + produtoExistente.getEstoque());
+        System.out.print("Digite a nova quantidade em estoque (deixe vazio para manter): ");
+        String estoqueText = scanner.nextLine().trim();
+        int novoEstoque = produtoExistente.getEstoque();
+
+        if (!estoqueText.isBlank()) {
+            try {
+                novoEstoque = Integer.parseInt(estoqueText);
+            } catch (NumberFormatException ex) {
+                System.err.println("Erro: Estoque inválido. Mantendo estoque anterior. Detalhe: " + ex.getMessage());
+                // Permite continuar com o estoque antigo
+            }
         }
 
         Produto produtoAtualizado = new Produto(id, novoNome, novaDescricao, produtoExistente.getPreco(), novoEstoque);
         produtoController.atualizarProduto(produtoAtualizado);
-
+        System.out.println("Produto atualizado com sucesso!");
     }
 
     private void listarProdutos() {
@@ -121,8 +161,15 @@ public class ProdutoView {
     private void buscarProdutoPorId() {
         System.out.println("\n--- Busca de Produto por ID ---");
         System.out.print("Digite o ID do produto: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
+
+        // Refatoração do ID (int)
+        int id;
+        try {
+            id = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException ex) {
+            System.err.println("Erro: ID inválido. O ID deve ser um número inteiro. Detalhe: " + ex.getMessage());
+            return;
+        }
 
         Produto produto = produtoController.buscarProdutoPorId(id);
         if (produto != null) {
@@ -131,7 +178,5 @@ public class ProdutoView {
         } else {
             System.err.println("Produto não encontrado.");
         }
-
     }
 }
-
