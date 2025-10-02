@@ -1,4 +1,58 @@
-# E-Commerce Ada Tech - Projeto de Estudo
+Ada Commerce — E-Commerce  Técnicas de Programação
+
+Projeto de estudo em Java (console) para simular um e-commerce: cadastro de clientes e produtos, criação/gestão de pedidos, pagamento e entrega. Este sprint foca em:
+1-Correções pedidas pelo professor;
+2-Tratamento de erros (exceções de domínio);
+3-Adequações ao OCP (injeção por construtor e remoção de new desnecessário dentro de services);
+4- Preparação para Cupom e Regras de Desconto;
+
+**O que já foi feito**
+
+✅ Pacote de exceções de domínio com.adatech.ecommerce.exception com:
+ValidationException (erros de entrada/validação)
+NotFoundException (entidades não encontradas)
+BusinessException (regras de negócio)
+Todas estendem RuntimeException.
+
+✅ ClienteServiceImpl refatorado
+Injeção por construtor da interface ClienteRepository (OCP ok).
+Remoção dos System.err.println → agora lança exceções de domínio.
+Validações de CPF obrigatório e unicidade.
+Métodos implementados: cadastrarCliente, atualizarCliente, listarClientes, buscarClientePorCpf, buscarClientePorId.
+
+✅ ProdutoServiceImpl iniciado
+Injeção por construtor da interface ProdutoRepository (OCP ok).
+Validações de nome, preço, estoque e id duplicado.
+Erros via exceções de domínio.
+
+✅ ProdutoController ajustado
+Agora instancia o service com new ProdutoRepositoryImpl() no construtor.
+
+✅ Bug
+Cliente.existente(...) agora usa o id corretamente.
+Geradores de id iniciando em 1 (consistência entre repositórios).
+
+O que falta (checklist)
+
+- [ ]  Views (Cliente/Produto/Pedido): trocar leituras “diretas” (nextInt, nextBigDecimal) por nextLine() + parse com try/catch, e mostrar mensagens amigáveis usando ex.getMessage().
+
+- [ ]  PedidoServiceImpl: aplicar injeção por construtor (como fizemos em Cliente/Produto) e substituir System.err.println por exceções de domínio.
+
+- [ ]  PedidoController: instanciar PedidoServiceImpl passando interfaces de repositório e NotificationService (Opção 1).
+
+- [ ]  Cupom & Regras de desconto (POO II): adicionar modelos/serviços/regras (planejado abaixo).
+
+- [ ]  Reduzir comentários redundantes (código deve se explicar; manter apenas “por quê”).
+
+- [ ]  Usar total com desconto ao finalizar pedido.
+
+- [ ]  Validação de entrada/CPF, testes unitários, persistência em arquivos.
+
+>>>>>>>>>>>>>>>>>>> TÉCNICAS DE PROGRAMAÇÃO<<<<<<<<<<<<<<<<<<
+
+
+____________________________________________________________________________________________________________________________________________________________________________
+# E-Commerce Ada Tech - Projeto de Estudo  (FINALIZADO)
 
 Este projeto é um sistema de E-Commerce desenvolvido como um exercício para a Ada Tech. O objetivo é aplicar os conceitos de Programação Orientada a Objetos (POO) e os princípios SOLID.
 
