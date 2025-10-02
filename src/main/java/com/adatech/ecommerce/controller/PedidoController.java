@@ -1,5 +1,9 @@
 package com.adatech.ecommerce.controller;
 
+import com.adatech.ecommerce.repository.ClienteRepositoryImpl;
+import com.adatech.ecommerce.repository.PedidoRepositoryImpl;
+import com.adatech.ecommerce.repository.ProdutoRepositoryImpl;
+import com.adatech.ecommerce.service.EmailNotificationServiceImpl;
 import com.adatech.ecommerce.service.PedidoService;
 import com.adatech.ecommerce.service.PedidoServiceImpl;
 import com.adatech.ecommerce.model.Pedido;
@@ -10,8 +14,10 @@ public class PedidoController {
 
     private final PedidoService pedidoService;
 
-    public PedidoController() {
-        this.pedidoService = new PedidoServiceImpl();
+
+    // O Controller deve receber o serviço, sem saber como ele foi criado.
+    public PedidoController(PedidoService pedidoService) {
+        this.pedidoService = pedidoService; // A dependência é INJETADA
     }
 
     public Pedido criarPedido(String cpfCliente) {

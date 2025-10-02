@@ -9,35 +9,43 @@ Projeto de estudo em Java (console) para simular um e-commerce: cadastro de clie
 **O que já foi feito**
 
 ✅ Pacote de exceções de domínio com.adatech.ecommerce.exception com:
+
 ValidationException (erros de entrada/validação)
 NotFoundException (entidades não encontradas)
 BusinessException (regras de negócio)
 Todas estendem RuntimeException.
 
 ✅ ClienteServiceImpl refatorado
+
 Injeção por construtor da interface ClienteRepository (OCP ok).
 Remoção dos System.err.println → agora lança exceções de domínio.
 Validações de CPF obrigatório e unicidade.
 Métodos implementados: cadastrarCliente, atualizarCliente, listarClientes, buscarClientePorCpf, buscarClientePorId.
 
 ✅ ProdutoServiceImpl iniciado
+
 Injeção por construtor da interface ProdutoRepository (OCP ok).
 Validações de nome, preço, estoque e id duplicado.
 Erros via exceções de domínio.
 
 ✅ ProdutoController ajustado
+
 Agora instancia o service com new ProdutoRepositoryImpl() no construtor.
 
 ✅ Bug
+
 Cliente.existente(...) agora usa o id corretamente.
 Geradores de id iniciando em 1 (consistência entre repositórios).
 
 ✅ Views
+
 Views (Cliente/Produto/Pedido): trocar leituras “diretas” (nextInt, nextBigDecimal) por nextLine() + parse com try/catch, e mostrar mensagens amigáveis usando ex.getMessage().
 
+✅ aplicar injeção por construtor
+
+PedidoServiceImpl: aplicar injeção por construtor (como fizemos em Cliente/Produto) e substituir System.err.println por exceções de domínio.
+
 O que falta (checklist)
- 
-- [ ]  PedidoServiceImpl: aplicar injeção por construtor (como fizemos em Cliente/Produto) e substituir System.err.println por exceções de domínio.
 
 - [ ]  PedidoController: instanciar PedidoServiceImpl passando interfaces de repositório e NotificationService (Opção 1).
 
