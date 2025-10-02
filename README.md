@@ -32,10 +32,11 @@ Agora instancia o service com new ProdutoRepositoryImpl() no construtor.
 Cliente.existente(...) agora usa o id corretamente.
 Geradores de id iniciando em 1 (consistência entre repositórios).
 
+✅ Views
+Views (Cliente/Produto/Pedido): trocar leituras “diretas” (nextInt, nextBigDecimal) por nextLine() + parse com try/catch, e mostrar mensagens amigáveis usando ex.getMessage().
+
 O que falta (checklist)
-
-- [ ]  Views (Cliente/Produto/Pedido): trocar leituras “diretas” (nextInt, nextBigDecimal) por nextLine() + parse com try/catch, e mostrar mensagens amigáveis usando ex.getMessage().
-
+ 
 - [ ]  PedidoServiceImpl: aplicar injeção por construtor (como fizemos em Cliente/Produto) e substituir System.err.println por exceções de domínio.
 
 - [ ]  PedidoController: instanciar PedidoServiceImpl passando interfaces de repositório e NotificationService (Opção 1).
