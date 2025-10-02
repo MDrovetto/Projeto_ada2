@@ -61,12 +61,11 @@ public class ProdutoView {
         String descricao = scanner.nextLine();
         System.out.print("Digite o preço: ");
         BigDecimal preco = scanner.nextBigDecimal();
-        scanner.nextLine(); // Consome a quebra de linha
+        scanner.nextLine();
         System.out.print("Digite o estoque inicial: ");
         int estoque = scanner.nextInt();
-        scanner.nextLine(); // Consome a quebra de linha
+        scanner.nextLine();
 
-        // O ID é gerado automaticamente, então passamos 0 no construtor.
         Produto novoProduto = new Produto(0, nome, descricao, preco, estoque);
         produtoController.cadastrarProduto(novoProduto);
     }
@@ -75,7 +74,7 @@ public class ProdutoView {
         System.out.println("\n--- Atualização de Produto ---");
         System.out.print("Digite o ID do produto que deseja atualizar: ");
         int id = scanner.nextInt();
-        scanner.nextLine(); // Consome a quebra de linha
+        scanner.nextLine();
 
         Produto produtoExistente = produtoController.buscarProdutoPorId(id);
         if (produtoExistente == null) {
@@ -123,7 +122,7 @@ public class ProdutoView {
         System.out.println("\n--- Busca de Produto por ID ---");
         System.out.print("Digite o ID do produto: ");
         int id = scanner.nextInt();
-        scanner.nextLine(); // Consome a quebra de linha
+        scanner.nextLine();
 
         Produto produto = produtoController.buscarProdutoPorId(id);
         if (produto != null) {
