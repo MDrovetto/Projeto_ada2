@@ -196,12 +196,17 @@ public class PedidoServiceImpl implements PedidoService {
             throw new PedidoVazioException("Não é possível finalizar um pedido que não contém itens.");
         }
 
-        if (pedido.getValorTotal() == null || pedido.getValorTotal().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new RegraDeNegocioException("O valor total do pedido é zero ou negativo. Verifique os itens.");
+        // ALTERAÇÃO CRUCIAL: Usamos explicitamente getTotalComDesconto()
+        // para validar o valor final que será cobrado.
+        BigDecimal valorFinal = pedido.getTotalComDesconto();
+
+        if (valorFinal == null || valorFinal.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RegraDeNegocioException("O valor total do pedido com desconto (" + valorFinal + ") é zero ou negativo. Verifique os itens ou o desconto.");
         }
 
         if (pedido.getCupomAplicado() != null) {
             try {
+                // Marca o cupom como usado antes de mudar o status do pedido.
                 cupomService.marcarComoUsado(pedido.getCupomAplicado().getId());
             } catch (Exception ex) {
                 // Propaga a falha de regra se a marcação do cupom falhar.
@@ -212,7 +217,7 @@ public class PedidoServiceImpl implements PedidoService {
         pedido.setStatus(StatusPedido.AGUARDANDO_PAGAMENTO);
         pedidoRepository.salvar(pedido);
 
-        notificationService.enviarNotificacao(pedido.getCliente(), "Seu pedido foi finalizado e está aguardando pagamento! ID: " + pedido.getId());
+        notificationService.enviarNotificacao(pedido.getCliente(), "Seu pedido foi finalizado (Total: R$" + valorFinal + ") e está aguardando pagamento! ID: " + pedido.getId());
         return true;
     }
 

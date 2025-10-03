@@ -49,13 +49,16 @@ PedidoServiceImpl: aplicar injeção por construtor (como fizemos em Cliente/Pro
 
 PedidoController: instanciar PedidoServiceImpl passando interfaces de repositório e NotificationService (Opção 1).
 
+✅ Cupom & Regras de desconto
+
+Cupom & Regras de desconto (POO II): adicionar modelos/serviços/regras (planejado abaixo).
 O que falta (checklist)
 
-- [ ]  Cupom & Regras de desconto (POO II): adicionar modelos/serviços/regras (planejado abaixo).
+✅ Finalizar Pedido
+
+Usar total com desconto ao finalizar pedido.
 
 - [ ]  Reduzir comentários redundantes (código deve se explicar; manter apenas “por quê”).
-
-- [ ]  Usar total com desconto ao finalizar pedido.
 
 - [ ]  Validação de entrada/CPF, testes unitários, persistência em arquivos.
 
