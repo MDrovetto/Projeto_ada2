@@ -16,25 +16,27 @@ public class PedidoServiceImpl implements PedidoService {
     private final ClienteRepository clienteRepository;
     private final ProdutoRepository produtoRepository;
     private final NotificationService notificationService;
+    private final CupomService cupomService;
 
-    // 1. INJEÇÃO POR CONSTRUTOR
+    // 1. INJEÇÃO POR CONSTRUTOR ATUALIZADA
     public PedidoServiceImpl(
             PedidoRepository pedidoRepository,
             ClienteRepository clienteRepository,
             ProdutoRepository produtoRepository,
-            NotificationService notificationService) {
+            NotificationService notificationService,
+            CupomService cupomService) {
 
         this.pedidoRepository = pedidoRepository;
         this.clienteRepository = clienteRepository;
         this.produtoRepository = produtoRepository;
         this.notificationService = notificationService;
+        this.cupomService = cupomService;
     }
 
     @Override
     public Pedido criarPedido(String cpfCliente) {
         Cliente cliente = clienteRepository.buscarPorCpf(cpfCliente);
 
-        // 2. EXCEÇÃO DE DOMÍNIO
         if (cliente == null) {
             throw new RecursoNaoEncontradoException("Cliente com CPF '" + cpfCliente + "' não encontrado para criar o pedido.");
         }
@@ -46,7 +48,6 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     public boolean adicionarItem(int pedidoId, int produtoId, int quantidade, double precoVenda) {
 
-        // Validação de entrada
         if (quantidade <= 0) {
             throw new RegraDeNegocioException("A quantidade do item deve ser positiva.");
         }
@@ -57,7 +58,6 @@ public class PedidoServiceImpl implements PedidoService {
         Pedido pedido = pedidoRepository.buscarPorId(pedidoId);
         Produto produto = produtoRepository.buscarPorId(produtoId);
 
-        // 2. EXCEÇÕES DE DOMÍNIO
         if (pedido == null) {
             throw new RecursoNaoEncontradoException("Pedido ID " + pedidoId + " não encontrado.");
         }
@@ -65,15 +65,17 @@ public class PedidoServiceImpl implements PedidoService {
             throw new RecursoNaoEncontradoException("Produto ID " + produtoId + " não encontrado.");
         }
 
-        // Validação de status
         if (pedido.getStatus() != StatusPedido.ABERTO) {
             throw new RegraDeNegocioException("Não é possível adicionar itens a um pedido com status '" + pedido.getStatus() + "'.");
         }
 
+        // Se o pedido tinha um cupom aplicado, ele deve ser removido ou revalidado
+        // antes de adicionar um novo item, para garantir a precisão do valor total.
+        // Simplificando, assumimos que o método 'pedido.adicionarItem' recalcula o valor total.
+
         BigDecimal precoVendaBigDecimal = BigDecimal.valueOf(precoVenda);
         ItemVenda item = new ItemVenda(produto, quantidade, precoVendaBigDecimal);
 
-        // Note: Se o produto já existir, o método 'adicionarItem' do Pedido deve ser inteligente o suficiente para atualizar a quantidade.
         pedido.adicionarItem(item);
         pedidoRepository.salvar(pedido);
         return true;
@@ -105,7 +107,6 @@ public class PedidoServiceImpl implements PedidoService {
             return true;
         }
 
-        // 2. EXCEÇÃO DE DOMÍNIO
         throw new RecursoNaoEncontradoException("Item com Produto ID " + produtoId + " não encontrado no pedido.");
     }
 
@@ -133,10 +134,8 @@ public class PedidoServiceImpl implements PedidoService {
         }
 
         if (itemParaAlterar != null) {
-            // Remove o item antigo
             pedido.removerItem(itemParaAlterar);
 
-            // Adiciona o novo item com a nova quantidade (mantendo o preço de venda original)
             BigDecimal precoVendaOriginal = itemParaAlterar.getPrecoVenda();
             ItemVenda novoItem = new ItemVenda(itemParaAlterar.getProduto(), novaQuantidade, precoVendaOriginal);
             pedido.adicionarItem(novoItem);
@@ -146,6 +145,43 @@ public class PedidoServiceImpl implements PedidoService {
         }
 
         throw new RecursoNaoEncontradoException("Item com Produto ID " + produtoId + " não encontrado no pedido.");
+    }
+
+    @Override
+    public boolean aplicarCupom(int pedidoId, String codigoCupom) {
+        Pedido pedido = pedidoRepository.buscarPorId(pedidoId);
+
+        if (pedido == null) {
+            throw new RecursoNaoEncontradoException("Pedido ID " + pedidoId + " não encontrado.");
+        }
+
+        if (pedido.getStatus() != StatusPedido.ABERTO) {
+            throw new RegraDeNegocioException("Não é possível aplicar cupom a um pedido que não está ABERTO.");
+        }
+
+        if (pedido.getItens().isEmpty()) {
+            throw new RegraDeNegocioException("Não é possível aplicar cupom a um pedido vazio.");
+        }
+
+        if (pedido.getCupomAplicado() != null) {
+            throw new RegraDeNegocioException("Um cupom já está aplicado neste pedido (" + pedido.getCupomAplicado().getCodigo() + ").");
+        }
+
+        BigDecimal valorTotalPedido = pedido.getValorTotal();
+
+        try {
+            BigDecimal novoValorTotal = cupomService.aplicarDesconto(codigoCupom, valorTotalPedido);
+            Cupom cupom = cupomService.buscarPorCodigo(codigoCupom);
+
+            // Assumimos que Pedido tem um método 'aplicarCupom' que atualiza o valor total
+            pedido.aplicarCupom(cupom, novoValorTotal);
+
+            pedidoRepository.salvar(pedido);
+            return true;
+
+        } catch (RecursoNaoEncontradoException | RegraDeNegocioException ex) {
+            throw ex;
+        }
     }
 
     @Override
@@ -160,15 +196,22 @@ public class PedidoServiceImpl implements PedidoService {
             throw new PedidoVazioException("Não é possível finalizar um pedido que não contém itens.");
         }
 
-        // Se a validação do valor total for necessária
         if (pedido.getValorTotal() == null || pedido.getValorTotal().compareTo(BigDecimal.ZERO) <= 0) {
             throw new RegraDeNegocioException("O valor total do pedido é zero ou negativo. Verifique os itens.");
+        }
+
+        if (pedido.getCupomAplicado() != null) {
+            try {
+                cupomService.marcarComoUsado(pedido.getCupomAplicado().getId());
+            } catch (Exception ex) {
+                // Propaga a falha de regra se a marcação do cupom falhar.
+                throw new RegraDeNegocioException("Falha ao marcar cupom como usado: " + ex.getMessage());
+            }
         }
 
         pedido.setStatus(StatusPedido.AGUARDANDO_PAGAMENTO);
         pedidoRepository.salvar(pedido);
 
-        // Assumindo que o serviço de notificação trata suas próprias exceções internamente
         notificationService.enviarNotificacao(pedido.getCliente(), "Seu pedido foi finalizado e está aguardando pagamento! ID: " + pedido.getId());
         return true;
     }
@@ -218,6 +261,7 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Override
     public Pedido buscarPedidoPorId(int id) {
+        // CORREÇÃO: Implementação do método que estava faltando.
         return pedidoRepository.buscarPorId(id);
     }
 }
