@@ -45,9 +45,11 @@ Views (Cliente/Produto/Pedido): trocar leituras “diretas” (nextInt, nextBigD
 
 PedidoServiceImpl: aplicar injeção por construtor (como fizemos em Cliente/Produto) e substituir System.err.println por exceções de domínio.
 
-O que falta (checklist)
+✅ PedidoController 
 
-- [ ]  PedidoController: instanciar PedidoServiceImpl passando interfaces de repositório e NotificationService (Opção 1).
+PedidoController: instanciar PedidoServiceImpl passando interfaces de repositório e NotificationService (Opção 1).
+
+O que falta (checklist)
 
 - [ ]  Cupom & Regras de desconto (POO II): adicionar modelos/serviços/regras (planejado abaixo).
 
