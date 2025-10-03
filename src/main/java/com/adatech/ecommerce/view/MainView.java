@@ -32,17 +32,23 @@ public class MainView {
         // 2. Criação dos Serviços Auxiliares (como notificação)
         EmailNotificationServiceImpl notificationService = new EmailNotificationServiceImpl();
 
+        // 2.1 Crie o Repositório de Cupom
+        CupomRepository cupomRepo = new CupomRepositoryImpl();
+
         // 3. Criação dos Services (a lógica de negócio), injetando os Repositórios
         //  ClienteServiceImpl e ProdutoServiceImpl têm construtores de injeção!
         ClienteService clienteService = new ClienteServiceImpl(clienteRepo);
         ProdutoService produtoService = new ProdutoServiceImpl(produtoRepo);
-        PedidoService pedidoService = new PedidoServiceImpl(
-                pedidoRepo,
-                clienteRepo,
-                produtoRepo,
-                notificationService
-        );
+        CupomService cupomService = new CupomServiceImpl(cupomRepo); // NOVO ARGUMENTO
 
+        // 3. Crie o PedidoService, injetando todas as 5 dependências
+        PedidoService pedidoService = new PedidoServiceImpl(
+                pedidoRepo,         // 1. PedidoRepository
+                clienteRepo,        // 2. ClienteRepository
+                produtoRepo,        // 3. ProdutoRepository
+                notificationService, // 4. NotificationService
+                cupomService         // 5. CupomService (A correção!)
+        );
         // 4. Criação dos Controllers, injetando os Services
         // CORREÇÃO DO ERRO: Passando os services necessários para cada controller.
         ClienteController clienteController = new ClienteController();
