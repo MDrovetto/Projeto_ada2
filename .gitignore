@@ -43,3 +43,4 @@ build/
 ### Arquivos do sistema ###
 Thumbs.db
 report.html
+*.dat
