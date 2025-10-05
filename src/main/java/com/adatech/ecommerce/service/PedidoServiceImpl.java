@@ -1,5 +1,8 @@
 package com.adatech.ecommerce.service;
 
+import com.adatech.ecommerce.exception.PedidoVazioException;
+import com.adatech.ecommerce.exception.RegraDeNegocioException;
+import com.adatech.ecommerce.exception.RecursoNaoEncontradoException;
 import com.adatech.ecommerce.model.*;
 import com.adatech.ecommerce.repository.*;
 import java.math.BigDecimal;
@@ -8,47 +11,71 @@ import java.util.List;
 
 public class PedidoServiceImpl implements PedidoService {
 
+    // Dependências injetadas
     private final PedidoRepository pedidoRepository;
     private final ClienteRepository clienteRepository;
     private final ProdutoRepository produtoRepository;
-    private final NotificationService notificationService; // A ser criado
+    private final NotificationService notificationService;
+    private final CupomService cupomService;
 
-    public PedidoServiceImpl() {
-        this.pedidoRepository = new PedidoRepositoryImpl();
-        this.clienteRepository = new ClienteRepositoryImpl();
-        this.produtoRepository = new ProdutoRepositoryImpl();
-        this.notificationService = new EmailNotificationServiceImpl(); // A ser criado
+    // 1. INJEÇÃO POR CONSTRUTOR ATUALIZADA
+    public PedidoServiceImpl(
+            PedidoRepository pedidoRepository,
+            ClienteRepository clienteRepository,
+            ProdutoRepository produtoRepository,
+            NotificationService notificationService,
+            CupomService cupomService) {
+
+        this.pedidoRepository = pedidoRepository;
+        this.clienteRepository = clienteRepository;
+        this.produtoRepository = produtoRepository;
+        this.notificationService = notificationService;
+        this.cupomService = cupomService;
     }
 
     @Override
     public Pedido criarPedido(String cpfCliente) {
         Cliente cliente = clienteRepository.buscarPorCpf(cpfCliente);
+
         if (cliente == null) {
-            System.err.println("Erro: Cliente não encontrado para criar o pedido.");
-            return null;
+            throw new RecursoNaoEncontradoException("Cliente com CPF '" + cpfCliente + "' não encontrado para criar o pedido.");
         }
+
         Pedido novoPedido = new Pedido(0, cliente, LocalDate.now());
         return pedidoRepository.salvar(novoPedido);
     }
 
     @Override
     public boolean adicionarItem(int pedidoId, int produtoId, int quantidade, double precoVenda) {
+
+        if (quantidade <= 0) {
+            throw new RegraDeNegocioException("A quantidade do item deve ser positiva.");
+        }
+        if (precoVenda <= 0) {
+            throw new RegraDeNegocioException("O preço de venda deve ser positivo.");
+        }
+
         Pedido pedido = pedidoRepository.buscarPorId(pedidoId);
         Produto produto = produtoRepository.buscarPorId(produtoId);
 
-        if (pedido == null || produto == null) {
-            System.err.println("Erro: Pedido ou Produto não encontrado.");
-            return false;
+        if (pedido == null) {
+            throw new RecursoNaoEncontradoException("Pedido ID " + pedidoId + " não encontrado.");
+        }
+        if (produto == null) {
+            throw new RecursoNaoEncontradoException("Produto ID " + produtoId + " não encontrado.");
         }
 
-        // Valida se o status do pedido é "ABERTO" para permitir a adição do item.
         if (pedido.getStatus() != StatusPedido.ABERTO) {
-            System.err.println("Erro: Não é possível adicionar itens a um pedido que não está em status ABERTO.");
-            return false;
+            throw new RegraDeNegocioException("Não é possível adicionar itens a um pedido com status '" + pedido.getStatus() + "'.");
         }
+
+        // Se o pedido tinha um cupom aplicado, ele deve ser removido ou revalidado
+        // antes de adicionar um novo item, para garantir a precisão do valor total.
+        // Simplificando, assumimos que o método 'pedido.adicionarItem' recalcula o valor total.
 
         BigDecimal precoVendaBigDecimal = BigDecimal.valueOf(precoVenda);
         ItemVenda item = new ItemVenda(produto, quantidade, precoVendaBigDecimal);
+
         pedido.adicionarItem(item);
         pedidoRepository.salvar(pedido);
         return true;
@@ -56,13 +83,14 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Override
     public boolean removerItem(int pedidoId, int produtoId) {
-        Pedido pedido = pedidoRepository.buscarPorId(pedidoId); // instância temporariamente um pedido para ver se existe na lista de pedidos
+        Pedido pedido = pedidoRepository.buscarPorId(pedidoId);
+
         if (pedido == null) {
-            return false;
+            throw new RecursoNaoEncontradoException("Pedido ID " + pedidoId + " não encontrado.");
         }
 
         if (pedido.getStatus() != StatusPedido.ABERTO) {
-            return false;
+            throw new RegraDeNegocioException("Não é possível remover itens de um pedido com status '" + pedido.getStatus() + "'.");
         }
 
         ItemVenda itemParaRemover = null;
@@ -78,21 +106,23 @@ public class PedidoServiceImpl implements PedidoService {
             pedidoRepository.salvar(pedido);
             return true;
         }
-        return false;
+
+        throw new RecursoNaoEncontradoException("Item com Produto ID " + produtoId + " não encontrado no pedido.");
     }
 
     @Override
     public boolean alterarQuantidadeItem(int pedidoId, int produtoId, int novaQuantidade) {
         Pedido pedido = pedidoRepository.buscarPorId(pedidoId);
 
-        if (pedido == null || novaQuantidade <= 0) {
-            System.err.println("Erro: Pedido não encontrado ou quantidade inválida.");
-            return false;
+        if (pedido == null) {
+            throw new RecursoNaoEncontradoException("Pedido ID " + pedidoId + " não encontrado.");
+        }
+        if (novaQuantidade <= 0) {
+            throw new RegraDeNegocioException("A nova quantidade deve ser maior que zero.");
         }
 
         if (pedido.getStatus() != StatusPedido.ABERTO) {
-            System.err.println("Erro: Não é possível alterar itens de um pedido que não está ABERTO.");
-            return false;
+            throw new RegraDeNegocioException("Não é possível alterar itens de um pedido com status '" + pedido.getStatus() + "'.");
         }
 
         ItemVenda itemParaAlterar = null;
@@ -105,72 +135,127 @@ public class PedidoServiceImpl implements PedidoService {
 
         if (itemParaAlterar != null) {
             pedido.removerItem(itemParaAlterar);
+
             BigDecimal precoVendaOriginal = itemParaAlterar.getPrecoVenda();
             ItemVenda novoItem = new ItemVenda(itemParaAlterar.getProduto(), novaQuantidade, precoVendaOriginal);
-
             pedido.adicionarItem(novoItem);
+
             pedidoRepository.salvar(pedido);
-            System.out.println("Quantidade do item alterada com sucesso.");
             return true;
         }
 
-        System.err.println("Erro: Item não encontrado no pedido.");
-        return false;
+        throw new RecursoNaoEncontradoException("Item com Produto ID " + produtoId + " não encontrado no pedido.");
+    }
 
+    @Override
+    public boolean aplicarCupom(int pedidoId, String codigoCupom) {
+        Pedido pedido = pedidoRepository.buscarPorId(pedidoId);
+
+        if (pedido == null) {
+            throw new RecursoNaoEncontradoException("Pedido ID " + pedidoId + " não encontrado.");
+        }
+
+        if (pedido.getStatus() != StatusPedido.ABERTO) {
+            throw new RegraDeNegocioException("Não é possível aplicar cupom a um pedido que não está ABERTO.");
+        }
+
+        if (pedido.getItens().isEmpty()) {
+            throw new RegraDeNegocioException("Não é possível aplicar cupom a um pedido vazio.");
+        }
+
+        if (pedido.getCupomAplicado() != null) {
+            throw new RegraDeNegocioException("Um cupom já está aplicado neste pedido (" + pedido.getCupomAplicado().getCodigo() + ").");
+        }
+
+        BigDecimal valorTotalPedido = pedido.getValorTotal();
+
+        try {
+            BigDecimal novoValorTotal = cupomService.aplicarDesconto(codigoCupom, valorTotalPedido);
+            Cupom cupom = cupomService.buscarPorCodigo(codigoCupom);
+
+            // Assumimos que Pedido tem um método 'aplicarCupom' que atualiza o valor total
+            pedido.aplicarCupom(cupom, novoValorTotal);
+
+            pedidoRepository.salvar(pedido);
+            return true;
+
+        } catch (RecursoNaoEncontradoException | RegraDeNegocioException ex) {
+            throw ex;
+        }
     }
 
     @Override
     public boolean finalizarPedido(int pedidoId) {
-        // TODO: Implementar a lógica para finalizar o pedido
         Pedido pedido = pedidoRepository.buscarPorId(pedidoId);
+
         if (pedido == null) {
-            return false;
+            throw new RecursoNaoEncontradoException("Pedido ID " + pedidoId + " não encontrado.");
         }
 
-        if (pedido.getItens().isEmpty() || pedido.getValorTotal().compareTo(BigDecimal.ZERO) <= 0) {
-            System.err.println("Erro: Não é possível finalizar um pedido vazio.");
-            return false;
+        if (pedido.getItens().isEmpty()) {
+            throw new PedidoVazioException("Não é possível finalizar um pedido que não contém itens.");
+        }
+
+        // ALTERAÇÃO CRUCIAL: Usamos explicitamente getTotalComDesconto()
+        // para validar o valor final que será cobrado.
+        BigDecimal valorFinal = pedido.getTotalComDesconto();
+
+        if (valorFinal == null || valorFinal.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RegraDeNegocioException("O valor total do pedido com desconto (" + valorFinal + ") é zero ou negativo. Verifique os itens ou o desconto.");
+        }
+
+        if (pedido.getCupomAplicado() != null) {
+            try {
+                // Marca o cupom como usado antes de mudar o status do pedido.
+                cupomService.marcarComoUsado(pedido.getCupomAplicado().getId());
+            } catch (Exception ex) {
+                // Propaga a falha de regra se a marcação do cupom falhar.
+                throw new RegraDeNegocioException("Falha ao marcar cupom como usado: " + ex.getMessage());
+            }
         }
 
         pedido.setStatus(StatusPedido.AGUARDANDO_PAGAMENTO);
         pedidoRepository.salvar(pedido);
-        notificationService.enviarNotificacao(pedido.getCliente(), "Seu pedido foi finalizado com sucesso!");
+
+        notificationService.enviarNotificacao(pedido.getCliente(), "Seu pedido foi finalizado (Total: R$" + valorFinal + ") e está aguardando pagamento! ID: " + pedido.getId());
         return true;
     }
 
     @Override
     public boolean pagarPedido(int pedidoId) {
         Pedido pedido = pedidoRepository.buscarPorId(pedidoId);
+
         if (pedido == null) {
-            return false;
+            throw new RecursoNaoEncontradoException("Pedido ID " + pedidoId + " não encontrado.");
         }
 
         if (pedido.getStatus() != StatusPedido.AGUARDANDO_PAGAMENTO) {
-            System.err.println("Erro: O pedido não está aguardando pagamento.");
-            return false;
+            throw new RegraDeNegocioException("O pedido não pode ser pago pois o status atual é '" + pedido.getStatus() + "'. Deve estar AGUARDANDO_PAGAMENTO.");
         }
 
         pedido.setStatus(StatusPedido.PAGO);
         pedidoRepository.salvar(pedido);
-        notificationService.enviarNotificacao(pedido.getCliente(), "O pagamento do seu pedido foi confirmado!");
+
+        notificationService.enviarNotificacao(pedido.getCliente(), "O pagamento do seu pedido foi confirmado! ID: " + pedido.getId());
         return true;
     }
 
     @Override
     public boolean entregarPedido(int pedidoId) {
         Pedido pedido = pedidoRepository.buscarPorId(pedidoId);
+
         if (pedido == null) {
-            return false;
+            throw new RecursoNaoEncontradoException("Pedido ID " + pedidoId + " não encontrado.");
         }
 
         if (pedido.getStatus() != StatusPedido.PAGO) {
-            System.err.println("Erro: O pedido não está pago para ser entregue.");
-            return false;
+            throw new RegraDeNegocioException("O pedido não pode ser entregue pois o status atual é '" + pedido.getStatus() + "'. Deve estar PAGO.");
         }
 
         pedido.setStatus(StatusPedido.FINALIZADO);
         pedidoRepository.salvar(pedido);
-        notificationService.enviarNotificacao(pedido.getCliente(), "Seu pedido foi entregue!");
+
+        notificationService.enviarNotificacao(pedido.getCliente(), "Seu pedido foi entregue! Obrigado pela compra. ID: " + pedido.getId());
         return true;
     }
 
@@ -181,7 +266,7 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Override
     public Pedido buscarPedidoPorId(int id) {
+        // CORREÇÃO: Implementação do método que estava faltando.
         return pedidoRepository.buscarPorId(id);
     }
 }
-

@@ -14,6 +14,7 @@ public class ClienteView {
         this.clienteController = clienteController;
         this.scanner = scanner;
     }
+
     public void exibirMenu() {
 
         while (true) {
@@ -26,14 +27,18 @@ public class ClienteView {
             System.out.println("(6) Voltar");
             System.out.println("Escolha uma opção acima:");
 
+            // Leitura da opção como String (scanner.nextLine()) para robustez
             String opcao = scanner.nextLine().trim();
+
+            // Não precisamos de try/catch aqui, pois o switch já lida com Strings
+            // e o default pega qualquer valor inválido.
             switch (opcao) {
                 case "1":
                     cadastrarCliente();
                     break;
                 case "2":
-                     atualizarCliente();
-                     break;
+                    atualizarCliente();
+                    break;
                 case "3":
                     listarClientes();
                     break;
@@ -41,100 +46,136 @@ public class ClienteView {
                     buscarClientePorCpf();
                     break;
                 case "5":
-                    buscarClientePorId();
+                    buscarClientePorId(); // Método refatorado para ter try/catch no parse
                     break;
                 case "6":
                     return;
                 default:
-                    System.out.println("\nOpção inválida, tente novamente.");
-
+                    System.err.println("\nOpção inválida: '" + opcao + "'. Por favor, digite apenas o número da opção.");
             }
-
         }
     }
 
     private void cadastrarCliente() {
-        System.out.println("\nCadastrar Clientes");
-        System.out.println("Nome: ");
+        System.out.println("\n--- Cadastrar Clientes ---");
+
+        // Todas as entradas já são Strings, o que é seguro.
+        System.out.print("Nome: ");
         String nome= scanner.nextLine().trim();
-        System.out.println("CPF: ");
+        System.out.print("CPF: ");
         String cpf= scanner.nextLine().trim();
-        System.out.println("Email: ");
+        System.out.print("Email: ");
         String email= scanner.nextLine().trim();
-        System.out.println("Endereço: ");
+        System.out.print("Endereço: ");
         String endereco= scanner.nextLine().trim();
 
-     Cliente cliente = new Cliente(0,nome, cpf, email, endereco);
-     clienteController.cadastrarCliente(cliente);
-     System.out.println("Cliente cadastrado.");
+        // Tratamento de exceção em caso de erro na criação ou cadastro (simulando um erro de domínio)
+        try {
+            Cliente cliente = new Cliente(0, nome, cpf, email, endereco);
+            clienteController.cadastrarCliente(cliente);
+            System.out.println("Cliente cadastrado com sucesso!");
+        } catch (Exception ex) {
+            System.err.println("Falha ao cadastrar o cliente. Detalhe: " + ex.getMessage());
+        }
     }
 
     private void atualizarCliente() {
 
-        System.out.println("\nAtualizar Cliente");
-        System.out.print("CPF do cliente: ");
+        System.out.println("\n--- Atualizar Cliente ---");
+        System.out.print("CPF do cliente para busca: ");
         String cpf = scanner.nextLine().trim();
 
         Cliente existente = clienteController.buscarPorCpf(cpf);
         if (existente == null) {
-            System.out.println("Cliente não encontrado. Tente novamente.");
-             return;
+            System.err.println("Cliente com CPF '" + cpf + "' não encontrado.");
+            return;
         }
 
-        System.out.print("Novo nome: ");
+        System.out.println("Cliente encontrado. Deixe o campo em branco para manter o valor atual.");
+
+        System.out.print("Novo nome (" + existente.getNome() + "): ");
         String nome = scanner.nextLine().trim();
         if (!nome.isBlank()) existente.setNome(nome);
 
-        System.out.print("Novo email: ");
+        System.out.print("Novo email (" + existente.getEmail() + "): ");
         String email = scanner.nextLine().trim();
         if (!email.isBlank()) existente.setEmail(email);
 
-        System.out.print("Novo endereço: ");
+        System.out.print("Novo endereço (" + existente.getEndereco() + "): ");
         String endereco = scanner.nextLine().trim();
         if (!endereco.isBlank()) existente.setEndereco(endereco);
 
-        boolean ok = clienteController.atualizarCliente(existente);
-        System.out.println(ok ? "Cliente atualizado com sucesso." : "Não foi possível atualizar os dados.");
+        // Tratamento de exceção em caso de erro na atualização (simulando um erro de domínio)
+        try {
+            boolean ok = clienteController.atualizarCliente(existente);
+            System.out.println(ok ? "Cliente atualizado com sucesso." : "Não foi possível atualizar os dados (verifique a lógica no Controller).");
+        } catch (Exception ex) {
+            System.err.println("Falha ao atualizar o cliente. Detalhe: " + ex.getMessage());
         }
+    }
 
     private void listarClientes() {
         System.out.println("\n--- Lista de Clientes ---");
-        List<Cliente> clientes = clienteController.listarClientes();
-        if (clientes.isEmpty()) { // isEmpty verifica se list tem elementos.
-            System.out.println("Nenhum cliente cadastrado.");
-        } else {
-            for (Cliente cliente : clientes) {
-                System.out.println(cliente);
+        // Tratamento de exceção em caso de erro na busca ou conexão
+        try {
+            List<Cliente> clientes = clienteController.listarClientes();
+            if (clientes.isEmpty()) {
+                System.out.println("Nenhum cliente cadastrado.");
+            } else {
+                for (Cliente cliente : clientes) {
+                    System.out.println(cliente);
+                }
             }
+        } catch (Exception ex) {
+            System.err.println("Falha ao listar os clientes. Detalhe: " + ex.getMessage());
         }
     }
 
     private void buscarClientePorCpf() {
         System.out.println("\n--- Busca de Cliente por CPF ---");
         System.out.print("Digite o CPF: ");
-        String cpf = scanner.nextLine();
+        String cpf = scanner.nextLine().trim();
 
-        Cliente cliente = clienteController.buscarPorCpf(cpf);
-        if (cliente != null) {
-            System.out.println("Cliente encontrado:");
-            System.out.println(cliente);
-        } else {
-            System.err.println("Cliente não encontrado.");
+        // Tratamento de exceção em caso de erro na busca
+        try {
+            Cliente cliente = clienteController.buscarPorCpf(cpf);
+            if (cliente != null) {
+                System.out.println("Cliente encontrado:");
+                System.out.println(cliente);
+            } else {
+                System.err.println("Cliente com CPF '" + cpf + "' não encontrado.");
+            }
+        } catch (Exception ex) {
+            System.err.println("Falha ao buscar o cliente. Detalhe: " + ex.getMessage());
         }
     }
 
-        private void buscarClientePorId() {
-            System.out.print("Digite o ID: ");
-            int id = Integer.parseInt(scanner.nextLine().trim());
+    // *** MÉTODO MELHORADO COM nextLine() + parse COM try/catch ***
+    private void buscarClientePorId() {
+        System.out.println("\n--- Busca de Cliente por ID ---");
+        System.out.print("Digite o ID (apenas números): ");
 
+        // 1. Leitura sempre como String
+        String idText = scanner.nextLine().trim();
+
+        try {
+            // 2. Tentativa de Conversão (Parse)
+            int id = Integer.parseInt(idText);
+
+            // 3. Chamada ao Controller com tratamento de exceção
             Cliente cliente = clienteController.buscarPorId(id);
             if (cliente != null) {
                 System.out.println("Cliente encontrado:");
                 System.out.println(cliente);
             } else {
-                System.err.println("Cliente não encontrado.");
+                System.err.println("Cliente com ID " + id + " não encontrado.");
             }
+        } catch (NumberFormatException ex) {
+            // 4. Captura e Mensagem Amigável se a entrada não for um número
+            System.err.println("Erro: ID inválido. O ID deve ser um número inteiro (Ex: 5). Detalhe: " + ex.getMessage());
+        } catch (Exception ex) {
+            // Captura qualquer outro erro que possa vir do Controller/Sistema
+            System.err.println("Falha ao buscar o cliente por ID. Detalhe: " + ex.getMessage());
         }
-
+    }
 }
-
