@@ -79,6 +79,18 @@ public class PedidoController {
         }
     }
 
+    public boolean aplicarCupom(int pedidoId, String codigoCupom) {
+        try {
+            return pedidoService.aplicarCupom(pedidoId, codigoCupom);
+        } catch (RecursoNaoEncontradoException | RegraDeNegocioException ex) {
+            System.err.println("Não foi possível aplicar o cupom: " + ex.getMessage());
+            return false;
+        } catch (Exception ex) {
+            System.err.println("Erro inesperado ao aplicar cupom. Detalhe: " + ex.getMessage());
+            return false;
+        }
+    }
+
     public boolean finalizarPedido(int pedidoId) {
         System.out.println("\n--- Finalizar Pedido ---");
         try {
