@@ -10,8 +10,8 @@ import com.adatech.ecommerce.repository.ProdutoRepositoryImpl;
 public class ProdutoController {
     private final ProdutoService produtoService;
 
-    public ProdutoController() {
-        this.produtoService = new ProdutoServiceImpl(new ProdutoRepositoryImpl());
+    public ProdutoController(ProdutoService produtoService) {
+        this.produtoService = produtoService;
     }
 
     public void cadastrarProduto(Produto produto) {

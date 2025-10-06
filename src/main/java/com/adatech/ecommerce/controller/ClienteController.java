@@ -9,8 +9,8 @@ import java.util.List;
 public class ClienteController {
     private final ClienteService clienteService;
 
-    public ClienteController() {
-        this.clienteService = new ClienteServiceImpl(new ClienteRepositoryImpl());
+    public ClienteController(ClienteService clienteService) {
+        this.clienteService = clienteService;
     }
     public void cadastrarCliente(Cliente cliente) {
         clienteService.cadastrarCliente(cliente);
