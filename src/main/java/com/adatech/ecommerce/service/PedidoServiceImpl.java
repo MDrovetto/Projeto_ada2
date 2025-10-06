@@ -11,14 +11,12 @@ import java.util.List;
 
 public class PedidoServiceImpl implements PedidoService {
 
-    // Dependências injetadas
     private final PedidoRepository pedidoRepository;
     private final ClienteRepository clienteRepository;
     private final ProdutoRepository produtoRepository;
     private final NotificationService notificationService;
     private final CupomService cupomService;
 
-    // 1. INJEÇÃO POR CONSTRUTOR ATUALIZADA
     public PedidoServiceImpl(
             PedidoRepository pedidoRepository,
             ClienteRepository clienteRepository,
@@ -48,11 +46,27 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     public boolean adicionarItem(int pedidoId, int produtoId, int quantidade, BigDecimal precoVenda) {
 
+        if (quantidade <= 0) {
+            throw new RegraDeNegocioException("A quantidade do item deve ser positiva.");
+        }
         if (precoVenda == null || precoVenda.compareTo(BigDecimal.ZERO) <= 0) {
             throw new RegraDeNegocioException("O preço de venda deve ser positivo.");
         }
+
         Pedido pedido = pedidoRepository.buscarPorId(pedidoId);
+        if (pedido == null) {
+            throw new RecursoNaoEncontradoException("Pedido ID " + pedidoId + " não encontrado.");
+        }
+
         Produto produto = produtoRepository.buscarPorId(produtoId);
+        if (produto == null) {
+            throw new RecursoNaoEncontradoException("Produto ID " + produtoId + " não encontrado.");
+        }
+
+        if (pedido.getStatus() != StatusPedido.ABERTO) {
+            throw new RegraDeNegocioException("Não é possível adicionar itens a um pedido com status '" + pedido.getStatus() + "'.");
+        }
+
         ItemVenda item = new ItemVenda(produto, quantidade, precoVenda);
         pedido.adicionarItem(item);
         pedidoRepository.salvar(pedido);
@@ -150,8 +164,6 @@ public class PedidoServiceImpl implements PedidoService {
         try {
             BigDecimal novoValorTotal = cupomService.aplicarDesconto(codigoCupom, valorTotalPedido);
             Cupom cupom = cupomService.buscarPorCodigo(codigoCupom);
-
-            // Assumimos que Pedido tem um método 'aplicarCupom' que atualiza o valor total
             pedido.aplicarCupom(cupom, novoValorTotal);
 
             pedidoRepository.salvar(pedido);
@@ -174,8 +186,6 @@ public class PedidoServiceImpl implements PedidoService {
             throw new PedidoVazioException("Não é possível finalizar um pedido que não contém itens.");
         }
 
-        // ALTERAÇÃO CRUCIAL: Usamos explicitamente getTotalComDesconto()
-        // para validar o valor final que será cobrado.
         BigDecimal valorFinal = pedido.getTotalComDesconto();
 
         if (valorFinal == null || valorFinal.compareTo(BigDecimal.ZERO) <= 0) {
@@ -184,10 +194,8 @@ public class PedidoServiceImpl implements PedidoService {
 
         if (pedido.getCupomAplicado() != null) {
             try {
-                // Marca o cupom como usado antes de mudar o status do pedido.
                 cupomService.marcarComoUsado(pedido.getCupomAplicado().getId());
             } catch (Exception ex) {
-                // Propaga a falha de regra se a marcação do cupom falhar.
                 throw new RegraDeNegocioException("Falha ao marcar cupom como usado: " + ex.getMessage());
             }
         }
@@ -244,7 +252,14 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Override
     public Pedido buscarPedidoPorId(int id) {
-        // CORREÇÃO: Implementação do método que estava faltando.
         return pedidoRepository.buscarPorId(id);
+    }
+
+    @Override
+    public List<Pedido> buscarPedidosPorCliente(String cpf) {
+        if (cpf == null || cpf.isBlank()) {
+            throw new RegraDeNegocioException("CPF é obrigatório para a busca.");
+        }
+        return pedidoRepository.buscarPorCliente(cpf);
     }
 }

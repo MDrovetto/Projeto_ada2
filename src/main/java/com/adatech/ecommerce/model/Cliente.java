@@ -1,10 +1,9 @@
 package com.adatech.ecommerce.model;
 
-import java.io.Serializable; // 1. Importação necessária
+import java.io.Serializable;
 
-public class Cliente implements Serializable { // 2. Implementa a interface
+public class Cliente implements Serializable {
 
-    // A linha abaixo é opcional, mas recomendada para controlar a versão da classe
     private static final long serialVersionUID = 1L;
 
     private int id;
@@ -13,9 +12,7 @@ public class Cliente implements Serializable { // 2. Implementa a interface
     private String email;
     private String endereco;
 
-    // Construtor principal
     public Cliente(int id, String nome, String cpf, String email, String endereco) {
-        // Delegamos a validação para os setters
         this.id = id;
         setNome(nome);
         setCpf(cpf);
@@ -35,7 +32,6 @@ public class Cliente implements Serializable { // 2. Implementa a interface
         return id;
     }
 
-    // Não precisamos de validação no setId, pois o ID é geralmente interno ao sistema
     public void setId(int id) {
         this.id = id;
     }
@@ -44,7 +40,6 @@ public class Cliente implements Serializable { // 2. Implementa a interface
         return nome;
     }
 
-    // Tratamento de Exceção: O nome não pode ser nulo ou vazio
     public void setNome(String nome) {
         if (nome == null || nome.trim().isEmpty()) {
             throw new IllegalArgumentException("O nome do cliente não pode ser vazio.");
@@ -56,10 +51,8 @@ public class Cliente implements Serializable { // 2. Implementa a interface
         return cpf;
     }
 
-    // Tratamento de Exceção: O CPF não pode ser nulo ou ter comprimento inválido
     public void setCpf(String cpf) {
         if (cpf == null || cpf.length() != 11) {
-            // Em um sistema real, faríamos a validação matemática do CPF aqui ou no Service
             throw new IllegalArgumentException("CPF inválido. Deve ter 11 dígitos.");
         }
         this.cpf = cpf;
@@ -69,7 +62,6 @@ public class Cliente implements Serializable { // 2. Implementa a interface
         return email;
     }
 
-    // Tratamento de Exceção: Validação básica de email
     public void setEmail(String email) {
         if (email == null || !email.contains("@") || !email.contains(".")) {
             throw new IllegalArgumentException("Formato de e-mail inválido.");
@@ -81,7 +73,6 @@ public class Cliente implements Serializable { // 2. Implementa a interface
         return endereco;
     }
 
-    // Tratamento de Exceção: O endereço não pode ser nulo ou vazio
     public void setEndereco(String endereco) {
         if (endereco == null || endereco.trim().isEmpty()) {
             throw new IllegalArgumentException("O endereço do cliente não pode ser vazio.");

@@ -4,8 +4,8 @@ import com.adatech.ecommerce.controller.ClienteController;
 import com.adatech.ecommerce.controller.CupomController;
 import com.adatech.ecommerce.controller.PedidoController;
 import com.adatech.ecommerce.controller.ProdutoController;
-import com.adatech.ecommerce.repository.*; // Importando todas as implementações
-import com.adatech.ecommerce.service.*; // Importando todas as implementações de serviço
+import com.adatech.ecommerce.repository.*;
+import com.adatech.ecommerce.service.*;
 import java.util.Scanner;
 
 public class MainView {
@@ -59,12 +59,11 @@ public class MainView {
             System.out.println("0. Sair");
             System.out.print("Escolha uma opção: ");
 
-            // Refatoração de segurança na leitura
             String entrada = scanner.nextLine().trim();
             try {
                 opcao = Integer.parseInt(entrada);
             } catch (NumberFormatException e) {
-                opcao = -1; // Garante que caia no default
+                opcao = -1;
             }
 
             switch (opcao) {

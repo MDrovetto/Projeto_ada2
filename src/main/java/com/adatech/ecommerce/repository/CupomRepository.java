@@ -8,5 +8,4 @@ public interface CupomRepository {
     Cupom buscarPorCodigo(String codigo);
     Cupom buscarPorId(int id);
     List<Cupom> listarTodos();
-    // Poderia haver métodos para excluir, etc.
 }

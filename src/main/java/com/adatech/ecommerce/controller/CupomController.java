@@ -11,11 +11,9 @@ public class CupomController {
 
     private final CupomService cupomService;
 
-    // Injeção por Construtor
     public CupomController(CupomService cupomService) {
         this.cupomService = cupomService;
     }
-
     public Cupom cadastrarCupom(Cupom cupom) {
         try {
             return cupomService.cadastrarCupom(cupom);
@@ -30,20 +28,10 @@ public class CupomController {
 
     public BigDecimal tentarAplicarDesconto(String codigoCupom, BigDecimal valorPedido) {
         try {
-            // O serviço retorna o novo valor, já com o desconto aplicado
             return cupomService.aplicarDesconto(codigoCupom, valorPedido);
         } catch (RecursoNaoEncontradoException | RegraDeNegocioException ex) {
             System.err.println("Erro ao aplicar desconto: " + ex.getMessage());
-            return valorPedido; // Retorna o valor original em caso de falha
-        }
-    }
-
-    public void marcarCupomComoUsado(int id) {
-        try {
-            cupomService.marcarComoUsado(id);
-            System.out.println("Cupom ID " + id + " marcado como usado.");
-        } catch (RecursoNaoEncontradoException | RegraDeNegocioException ex) {
-            System.err.println("Erro ao marcar cupom: " + ex.getMessage());
+            return valorPedido;
         }
     }
 

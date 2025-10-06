@@ -29,6 +29,7 @@ public class PedidoView {
             System.out.println("1. Criar Novo Pedido");
             System.out.println("2. Gerenciar Pedido Existente");
             System.out.println("3. Listar Pedidos");
+            System.out.println("4. Buscar Pedidos por Cliente");
             System.out.println("0. Voltar");
             System.out.print("Escolha uma opção: ");
             String entrada = scanner.nextLine().trim();
@@ -47,6 +48,9 @@ public class PedidoView {
                 case 3:
                     listarPedidos();
                     break;
+                case 4:
+                    buscarPedidosPorCliente();
+                break;
                 case 0:
                     System.out.println("Voltando ao menu principal...");
                     break;
@@ -55,8 +59,6 @@ public class PedidoView {
             }
         } while (opcao != 0);
     }
-
-    // Em PedidoView.java
 
     private void criarPedido() {
         System.out.println("\n--- Criar Pedido ---");
@@ -196,7 +198,10 @@ public class PedidoView {
         System.out.println("+--------------------------------+-------+------------+");
         System.out.printf("| Total Bruto: R$ %-35.2f |\n", pedido.getValorBruto());
         if (pedido.getValorDesconto() != null && pedido.getValorDesconto().compareTo(BigDecimal.ZERO) > 0) {
-            String cupomCodigo = pedido.getCupomAplicado() != null ? pedido.getCupomAplicado().getCodigo() : "N/A";
+            String cupomCodigo = pedido.getCupomCodigo();
+            if (cupomCodigo == null) {
+                cupomCodigo = "N/A";
+            }
             String textoDesconto = String.format("Desconto (Cupom: %s): R$ -%.2f", cupomCodigo, pedido.getValorDesconto());
             System.out.printf("| %-51s |\n", textoDesconto);
             System.out.println("|-----------------------------------------------------|");
@@ -246,7 +251,6 @@ public class PedidoView {
                 precoVenda = new BigDecimal(precoVendaText);
             }
 
-            // ATENÇÃO: AQUI USAMOS BIGDECIMAL, NÃO DOUBLE
             pedidoController.adicionarItem(pedido.getId(), produtoId, quantidade, precoVenda);
             System.out.println("Item adicionado com sucesso.");
 
@@ -255,7 +259,6 @@ public class PedidoView {
         }
     }
 
-    // Os métodos de remover e alterar também recebem o objeto Pedido para maior eficiência
     private void removerItemDoPedido(Pedido pedido) {
         if (pedido.getItens().isEmpty()) {
             System.err.println("O carrinho já está vazio.");
@@ -318,7 +321,6 @@ public class PedidoView {
     }
 
     private void listarPedidos() {
-        // (Este método permanece igual ao seu, mas pode ser aprimorado para mostrar mais detalhes)
         System.out.println("\n--- Lista de Todos os Pedidos ---");
         try {
             List<Pedido> pedidos = pedidoController.listarPedidos();
@@ -334,4 +336,31 @@ public class PedidoView {
             System.err.println("Falha ao listar os pedidos: " + ex.getMessage());
         }
     }
-}
+        private void buscarPedidosPorCliente() {
+            System.out.println("\n--- Buscar Pedidos por Cliente ---");
+            System.out.print("Digite o CPF do cliente: ");
+            String cpf = scanner.nextLine().trim();
+
+            if (cpf.isEmpty()) {
+                System.err.println("CPF não pode ser vazio.");
+                return;
+            }
+
+            try {
+                List<Pedido> pedidosDoCliente = pedidoController.buscarPedidosPorCliente(cpf);
+
+                if (pedidosDoCliente.isEmpty()) {
+                    System.out.println("Nenhum pedido encontrado para o cliente com CPF: " + cpf);
+                } else {
+                    System.out.println("\nPedidos encontrados para o cliente com CPF: " + cpf);
+                    for (Pedido pedido : pedidosDoCliente) {
+                        System.out.println("--------------------------------------------------");
+                        System.out.println("ID: " + pedido.getId() + " | Status: " + pedido.getStatus() + " | Data: " + pedido.getDataCriacao() + " | Valor Total: R$ " + pedido.getValorTotal());
+                    }
+                    System.out.println("--------------------------------------------------");
+                }
+            } catch (Exception ex) {
+                System.err.println("Ocorreu um erro ao buscar os pedidos: " + ex.getMessage());
+            }
+        }
+    }

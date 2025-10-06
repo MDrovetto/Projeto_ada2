@@ -7,7 +7,6 @@ import java.util.Objects;
 
 public class Cupom implements Serializable {
 
-    // Recomendado para controle de versão durante a desserialização
     private static final long serialVersionUID = 1L;
 
     private int id;
@@ -18,41 +17,27 @@ public class Cupom implements Serializable {
     private boolean usado;
     private BigDecimal valorMinimo;
 
-    // Construtor principal
     public Cupom(int id, String codigo, BigDecimal valorFixo, BigDecimal percentual, LocalDate validade, BigDecimal valorMinimo) {
-        // Delega a validação para os setters para garantir a consistência
         this.id = id;
 
-        // Chamamos setCodigo() para validar o código
         setCodigo(codigo);
 
         setValorFixo(valorFixo);
         setPercentual(percentual);
         setValidade(validade);
         setValorMinimo(valorMinimo);
-        this.usado = false; // Valor inicial padrão
+        this.usado = false;
 
-        // Regra Crítica no Construtor
         if (this.valorFixo.compareTo(BigDecimal.ZERO) > 0 && this.percentual.compareTo(BigDecimal.ZERO) > 0) {
             throw new IllegalArgumentException("ERRO CRÍTICO: Um cupom não pode ter desconto fixo e percentual ao mesmo tempo.");
         }
     }
-
-    // -------------------------------------------------------------------
-    // GETTERS (Acessores)
-    // -------------------------------------------------------------------
-
     public int getId() { return id; }
     public String getCodigo() { return codigo; }
     public BigDecimal getValorFixo() { return valorFixo; }
     public BigDecimal getPercentual() { return percentual; }
-    public LocalDate getValidade() { return validade; }
     public boolean isUsado() { return usado; }
     public BigDecimal getValorMinimo() { return valorMinimo; }
-
-    // -------------------------------------------------------------------
-    // SETTERS (Modificadores) - Com Tratamento de Exceção
-    // -------------------------------------------------------------------
 
     public void setId(int id) {
         if (id < 0) {
@@ -79,7 +64,6 @@ public class Cupom implements Serializable {
     public void setPercentual(BigDecimal percentual) {
         BigDecimal perc = Objects.requireNonNullElse(percentual, BigDecimal.ZERO);
 
-        // 0 <= percentual <= 1.0 (ou 100%)
         if (perc.compareTo(BigDecimal.ZERO) < 0 || perc.compareTo(BigDecimal.ONE) > 0) {
             throw new IllegalArgumentException("O percentual de desconto deve estar entre 0.0 e 1.0 (0% a 100%).");
         }
@@ -87,7 +71,6 @@ public class Cupom implements Serializable {
     }
 
     public void setValidade(LocalDate validade) {
-        // Validade pode ser nula (cupom sem expiração)
         this.validade = validade;
     }
 
@@ -103,12 +86,8 @@ public class Cupom implements Serializable {
         this.valorMinimo = minimo;
     }
 
-    // -------------------------------------------------------------------
-    // REGRAS DE NEGÓCIO E OUTROS
-    // -------------------------------------------------------------------
 
     public boolean isExpirado() {
-        // Verifica se a data de validade é anterior a hoje
         return validade != null && validade.isBefore(LocalDate.now());
     }
 
