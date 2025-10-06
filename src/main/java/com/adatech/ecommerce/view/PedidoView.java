@@ -48,6 +48,7 @@ public class PedidoView {
     }
 
     private void criarPedido() {
+        // (Este método permanece igual ao seu)
         System.out.println("\n--- Criar Pedido ---");
         System.out.print("Digite o CPF do cliente para o novo pedido ou 0 para cancelar: ");
         String cpfCliente = scanner.nextLine().trim();
@@ -99,7 +100,9 @@ public class PedidoView {
             idPedido = Integer.parseInt(scanner.nextLine().trim());
             gerenciarPedido(idPedido);
         } catch (NumberFormatException ex) {
-            System.err.println("Erro: ID de pedido inválido. Deve ser um número.");
+          
+       System.err.println("Erro: ID de pedido inválido. Deve ser um número.");
+       return;
         }
     }
 
