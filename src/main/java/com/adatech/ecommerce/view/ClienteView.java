@@ -230,7 +230,6 @@ public class ClienteView {
         System.out.print("Digite o CPF: ");
         String cpf = scanner.nextLine().trim();
 
-        // Tratamento de exceção em caso de erro na busca
         try {
             Cliente cliente = clienteController.buscarPorCpf(cpf);
             if (cliente != null) {

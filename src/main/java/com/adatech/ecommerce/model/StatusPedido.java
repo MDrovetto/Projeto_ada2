@@ -1,10 +1,8 @@
 package com.adatech.ecommerce.model;
 
-import java.io.Serializable; // Adicionamos a interface por clareza
+import java.io.Serializable;
 
 public enum StatusPedido implements Serializable {
-
-    // Enums não precisam de serialVersionUID se não tiverem campos transient
 
     ABERTO("Pedido Aberto"),
     AGUARDANDO_PAGAMENTO("Aguardando Pagamento"),
@@ -15,10 +13,6 @@ public enum StatusPedido implements Serializable {
 
     StatusPedido(String descricao) {
         this.descricao = descricao;
-    }
-
-    public String getDescricao() {
-        return descricao;
     }
 
     @Override

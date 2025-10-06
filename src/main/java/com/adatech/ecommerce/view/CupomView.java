@@ -21,8 +21,6 @@ public class CupomView {
     }
 
     public void exibirMenu() {
-        // ... (Implementação do menu semelhante às outras Views, chamando cadastrarCupom)
-        // Usamos nextLine() + try/catch em toda entrada numérica ou de data.
 
         while (true) {
             System.out.println("\n------Menu Cupons------");
@@ -56,9 +54,6 @@ public class CupomView {
         System.out.print("Código do Cupom: ");
         String codigo = scanner.nextLine().trim().toUpperCase();
 
-        // ----------------------------------------------------
-        // ENTRADA SEGURA DE VALOR FIXO (BigDecimal)
-        // ----------------------------------------------------
         BigDecimal valorFixo = BigDecimal.ZERO;
         BigDecimal percentual = BigDecimal.ZERO;
 
@@ -84,9 +79,6 @@ public class CupomView {
             return;
         }
 
-        // ----------------------------------------------------
-        // ENTRADA SEGURA DE DATA (LocalDate)
-        // ----------------------------------------------------
         LocalDate validade = null;
         System.out.print("Data de Validade (formato dd/MM/yyyy): ");
         String validadeText = scanner.nextLine().trim();
@@ -97,9 +89,6 @@ public class CupomView {
             return;
         }
 
-        // ----------------------------------------------------
-        // ENTRADA SEGURA DE VALOR MÍNIMO (BigDecimal)
-        // ----------------------------------------------------
         BigDecimal valorMinimo = BigDecimal.ZERO;
         System.out.print("Valor Mínimo do Pedido (R$): ");
         try {
@@ -109,7 +98,6 @@ public class CupomView {
             System.err.println("Erro: Valor mínimo inválido. Usando R$0.00. Detalhe: " + ex.getMessage());
         }
 
-        // Criação e Cadastro
         Cupom novoCupom = new Cupom(0, codigo, valorFixo, percentual, validade, valorMinimo);
         Cupom cadastrado = cupomController.cadastrarCupom(novoCupom);
         if (cadastrado != null) {
@@ -137,7 +125,6 @@ public class CupomView {
         BigDecimal valorPedido = BigDecimal.ZERO;
         System.out.print("Digite o valor do pedido (R$): ");
 
-        // ENTRADA SEGURA DO VALOR DO PEDIDO
         try {
             String valorText = scanner.nextLine().trim().replace(",", ".");
             valorPedido = new BigDecimal(valorText);
@@ -155,6 +142,5 @@ public class CupomView {
             System.out.printf("Desconto Aplicado: R$%.2f%n", desconto);
             System.out.printf("Novo Valor do Pedido: R$%.2f%n", novoValor);
         }
-        // Se novoValor for igual ao valorPedido, a mensagem de erro já foi impressa pelo Controller.
     }
 }

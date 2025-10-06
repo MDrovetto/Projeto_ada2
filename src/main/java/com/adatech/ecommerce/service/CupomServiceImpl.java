@@ -10,14 +10,11 @@ import java.util.List;
 public class CupomServiceImpl implements CupomService {
 
     private final CupomRepository cupomRepository;
-
-    // Injeção de Dependência por Construtor
     public CupomServiceImpl(CupomRepository cupomRepository) {
         this.cupomRepository = cupomRepository;
     }
 
     public Cupom cadastrarCupom(Cupom cupom) {
-        // Regra de Negócio: Não cadastrar cupom com código duplicado (verificação adicional no service)
         Cupom existente = cupomRepository.buscarPorCodigo(cupom.getCodigo());
         if (existente != null) {
             throw new RegraDeNegocioException("Código de cupom '" + cupom.getCodigo() + "' já cadastrado.");
@@ -37,12 +34,9 @@ public class CupomServiceImpl implements CupomService {
         return cupomRepository.listarTodos();
     }
 
-    /**
-     * Regra Principal: Aplica o desconto ao valor do pedido, validando todas as regras.
-     */
     public BigDecimal aplicarDesconto(String codigoCupom, BigDecimal valorPedido) {
 
-        Cupom cupom = buscarPorCodigo(codigoCupom); // Lança RecursoNaoEncontradoException se não achar
+        Cupom cupom = buscarPorCodigo(codigoCupom);
 
         if (cupom.isExpirado()) {
             throw new RegraDeNegocioException("O cupom " + codigoCupom + " está expirado.");
@@ -58,19 +52,16 @@ public class CupomServiceImpl implements CupomService {
             );
         }
 
-        // Cálculo do desconto
         if (cupom.getValorFixo().compareTo(BigDecimal.ZERO) > 0) {
             return valorPedido.subtract(cupom.getValorFixo());
         } else if (cupom.getPercentual().compareTo(BigDecimal.ZERO) > 0) {
             BigDecimal desconto = valorPedido.multiply(cupom.getPercentual());
             return valorPedido.subtract(desconto);
         } else {
-            // Caso não tenha valor fixo nem percentual (cupom inválido)
             throw new RegraDeNegocioException("Cupom inválido: Não possui valor de desconto definido.");
         }
     }
 
-    // Método para marcar como usado (chamado após a finalização da compra)
     public void marcarComoUsado(int id) {
         Cupom cupom = cupomRepository.buscarPorId(id);
         if (cupom == null) {

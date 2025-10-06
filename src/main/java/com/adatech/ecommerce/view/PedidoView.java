@@ -5,6 +5,7 @@ import com.adatech.ecommerce.controller.ProdutoController;
 import com.adatech.ecommerce.model.ItemVenda;
 import com.adatech.ecommerce.model.Pedido;
 import com.adatech.ecommerce.model.Produto;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Scanner;
@@ -28,6 +29,7 @@ public class PedidoView {
             System.out.println("1. Criar Novo Pedido");
             System.out.println("2. Gerenciar Pedido Existente");
             System.out.println("3. Listar Pedidos");
+            System.out.println("4. Buscar Pedidos por Cliente");
             System.out.println("0. Voltar");
             System.out.print("Escolha uma opção: ");
             String entrada = scanner.nextLine().trim();
@@ -37,11 +39,23 @@ public class PedidoView {
                 opcao = -1;
             }
             switch (opcao) {
-                case 1: criarPedido(); break;
-                case 2: gerenciarPedido(); break;
-                case 3: listarPedidos(); break;
-                case 0: System.out.println("Voltando ao menu principal..."); break;
-                default: System.err.println("Opção inválida. Tente novamente.");
+                case 1:
+                    criarPedido();
+                    break;
+                case 2:
+                    gerenciarPedido();
+                    break;
+                case 3:
+                    listarPedidos();
+                    break;
+                case 4:
+                    buscarPedidosPorCliente();
+                break;
+                case 0:
+                    System.out.println("Voltando ao menu principal...");
+                    break;
+                default:
+                    System.err.println("Opção inválida. Tente novamente.");
             }
         } while (opcao != 0);
     }
@@ -60,33 +74,35 @@ public class PedidoView {
             if (novoPedido != null) {
                 System.out.println("Pedido criado com sucesso! ID do pedido: " + novoPedido.getId());
 
-            while (true) {
-                System.out.print("Deseja adicionar itens a este pedido agora? Escolha uma opção (1) Sim ou (2) Não: ");
-                String entrada = scanner.nextLine().trim();
-            int opcao;
+                while (true) {
+                    System.out.print("Deseja adicionar itens a este pedido agora? (1 - Sim / 2 - Não): ");
+                    String entrada = scanner.nextLine().trim();
+                    int opcao;
 
-            try {
-                opcao = Integer.parseInt(entrada);
-            }
-            catch (NumberFormatException e) {
-                        // Se o usuário digitar um texto, a opção se torna inválida
+                    try {
+                        opcao = Integer.parseInt(entrada);
+                    } catch (NumberFormatException e) {
                         opcao = -1;
                     }
-            switch (opcao)
-            {
-                case 1:
-                    gerenciarPedido(novoPedido.getId());
-                    return;
-                case 2:
-                    return;
 
-                default:
-                    System.err.println("Opção inválida. Por favor, digite 1 para Sim ou 2 para Não.");
+                    switch (opcao) {
+                        case 1:
+                            System.out.println("\nÓtimo! Vamos adicionar o primeiro item ao seu novo pedido.");
+                            adicionarItemAoPedido(novoPedido);
+
+
+                            System.out.println("\nItem adicionado. Agora você está no menu de gerenciamento do pedido:");
+                            gerenciarPedido(novoPedido.getId());
+
+                            return;
+                        case 2:
+                            return;
+                        default:
+                            System.err.println("Opção inválida. Por favor, digite 1 para Sim ou 2 para Não.");
                     }
                 }
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.err.println("Erro ao criar pedido: " + ex.getMessage());
         }
     }
@@ -112,14 +128,14 @@ public class PedidoView {
             }
 
 
-
             exibirResumoDoPedido(pedido);
             System.out.println("1. Adicionar Item");
             System.out.println("2. Remover Item");
             System.out.println("3. Alterar Quantidade do Item");
-            System.out.println("4. Finalizar Pedido");
-            System.out.println("5. Pagar Pedido");
-            System.out.println("6. Entregar Pedido");
+            System.out.println("4. Aplicar Cupom de Desconto");
+            System.out.println("5. Finalizar Pedido");
+            System.out.println("6. Pagar Pedido");
+            System.out.println("7. Entregar Pedido");
             System.out.println("0. Voltar ao menu de pedidos");
             System.out.print("Escolha uma opção: ");
 
@@ -142,12 +158,15 @@ public class PedidoView {
                         alterarQuantidadeItemDoPedido(pedido);
                         break;
                     case 4:
-                        pedidoController.finalizarPedido(idPedido);
+                        aplicarCupomAoPedido(pedido);
                         break;
                     case 5:
-                        pedidoController.pagarPedido(idPedido);
+                        pedidoController.finalizarPedido(idPedido);
                         break;
                     case 6:
+                        pedidoController.pagarPedido(idPedido);
+                        break;
+                    case 7:
                         pedidoController.entregarPedido(idPedido);
                         break;
                     case 0:
@@ -173,14 +192,22 @@ public class PedidoView {
             System.out.printf("| %-30s | %-5s | %-10s |\n", "Produto", "Qtd", "Subtotal");
             System.out.println("|--------------------------------+-------+------------|");
             for (ItemVenda item : pedido.getItens()) {
-                System.out.printf("| %-30s | %-5d | R$ %-8.2f |\n",
-                        item.getProduto().getNome(),
-                        item.getQuantidade(),
-                        item.calcularSubtotal());
+                System.out.printf("| %-30s | %-5d | R$ %-8.2f |\n", item.getProduto().getNome(), item.getQuantidade(), item.calcularSubtotal());
             }
         }
         System.out.println("+--------------------------------+-------+------------+");
         System.out.printf("| Total Bruto: R$ %-35.2f |\n", pedido.getValorBruto());
+        if (pedido.getValorDesconto() != null && pedido.getValorDesconto().compareTo(BigDecimal.ZERO) > 0) {
+            String cupomCodigo = pedido.getCupomCodigo();
+            if (cupomCodigo == null) {
+                cupomCodigo = "N/A";
+            }
+            String textoDesconto = String.format("Desconto (Cupom: %s): R$ -%.2f", cupomCodigo, pedido.getValorDesconto());
+            System.out.printf("| %-51s |\n", textoDesconto);
+            System.out.println("|-----------------------------------------------------|");
+            String textoTotal = String.format("TOTAL A PAGAR: R$ %.2f", pedido.getValorTotal());
+            System.out.printf("| %-51s |\n", textoTotal);
+        }
         System.out.println("+-----------------------------------------------------+\n");
     }
 
@@ -224,7 +251,6 @@ public class PedidoView {
                 precoVenda = new BigDecimal(precoVendaText);
             }
 
-            // ATENÇÃO: AQUI USAMOS BIGDECIMAL, NÃO DOUBLE
             pedidoController.adicionarItem(pedido.getId(), produtoId, quantidade, precoVenda);
             System.out.println("Item adicionado com sucesso.");
 
@@ -233,7 +259,6 @@ public class PedidoView {
         }
     }
 
-    // Os métodos de remover e alterar também recebem o objeto Pedido para maior eficiência
     private void removerItemDoPedido(Pedido pedido) {
         if (pedido.getItens().isEmpty()) {
             System.err.println("O carrinho já está vazio.");
@@ -266,8 +291,36 @@ public class PedidoView {
         }
     }
 
+    private void aplicarCupomAoPedido(Pedido pedido) {
+        if (pedido.getStatus() != com.adatech.ecommerce.model.StatusPedido.ABERTO) {
+            System.err.println("Cupons só podem ser aplicados em pedidos em aberto.");
+            return;
+        }
+
+        if (pedido.getCupomAplicado() != null) {
+            System.err.println("ERRO: Um cupom ('" + pedido.getCupomAplicado().getCodigo() + "') já foi aplicado a este pedido.");
+            return;
+        }
+
+        System.out.print("Digite o código do cupom: ");
+        String codigoCupom = scanner.nextLine().trim().toUpperCase();
+
+        if (codigoCupom.isEmpty()) {
+            System.out.println("Operação cancelada.");
+            return;
+        }
+
+        try {
+            boolean sucesso = pedidoController.aplicarCupom(pedido.getId(), codigoCupom);
+            if (sucesso) {
+                System.out.println("Cupom aplicado com sucesso!");
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex.getMessage(), ex);
+        }
+    }
+
     private void listarPedidos() {
-        // (Este método permanece igual ao seu, mas pode ser aprimorado para mostrar mais detalhes)
         System.out.println("\n--- Lista de Todos os Pedidos ---");
         try {
             List<Pedido> pedidos = pedidoController.listarPedidos();
@@ -275,8 +328,7 @@ public class PedidoView {
                 System.out.println("Nenhum pedido cadastrado.");
             } else {
                 for (Pedido pedido : pedidos) {
-                    System.out.println("ID: " + pedido.getId() + " | Cliente: " + pedido.getCliente().getNome() +
-                            " | Status: " + pedido.getStatus() + " | Valor Total: R$ " + pedido.getValorTotal());
+                    System.out.println("ID: " + pedido.getId() + " | Cliente: " + pedido.getCliente().getNome() + " | Status: " + pedido.getStatus() + " | Valor Total: R$ " + pedido.getValorTotal());
                     System.out.println("--------------------------------------------------");
                 }
             }
@@ -284,4 +336,31 @@ public class PedidoView {
             System.err.println("Falha ao listar os pedidos: " + ex.getMessage());
         }
     }
-}
+        private void buscarPedidosPorCliente() {
+            System.out.println("\n--- Buscar Pedidos por Cliente ---");
+            System.out.print("Digite o CPF do cliente: ");
+            String cpf = scanner.nextLine().trim();
+
+            if (cpf.isEmpty()) {
+                System.err.println("CPF não pode ser vazio.");
+                return;
+            }
+
+            try {
+                List<Pedido> pedidosDoCliente = pedidoController.buscarPedidosPorCliente(cpf);
+
+                if (pedidosDoCliente.isEmpty()) {
+                    System.out.println("Nenhum pedido encontrado para o cliente com CPF: " + cpf);
+                } else {
+                    System.out.println("\nPedidos encontrados para o cliente com CPF: " + cpf);
+                    for (Pedido pedido : pedidosDoCliente) {
+                        System.out.println("--------------------------------------------------");
+                        System.out.println("ID: " + pedido.getId() + " | Status: " + pedido.getStatus() + " | Data: " + pedido.getDataCriacao() + " | Valor Total: R$ " + pedido.getValorTotal());
+                    }
+                    System.out.println("--------------------------------------------------");
+                }
+            } catch (Exception ex) {
+                System.err.println("Ocorreu um erro ao buscar os pedidos: " + ex.getMessage());
+            }
+        }
+    }
