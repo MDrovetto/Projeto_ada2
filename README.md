@@ -58,9 +58,9 @@ O que falta (checklist)
 
 Usar total com desconto ao finalizar pedido.
 
-- [ ]  Reduzir comentários redundantes (código deve se explicar; manter apenas “por quê”).
+✅ Reduzir comentários redundantes (código deve se explicar; manter apenas “por quê”).
 
-- [ ]  Validação de entrada/CPF, testes unitários, persistência em arquivos.
+✅ Validação de entrada/CPF, testes unitários, persistência em arquivos.
 
 >>>>>>>>>>>>>>>>>>> TÉCNICAS DE PROGRAMAÇÃO<<<<<<<<<<<<<<<<<<
 
