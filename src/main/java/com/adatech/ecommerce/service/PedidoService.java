@@ -1,13 +1,15 @@
 package com.adatech.ecommerce.service;
 
 import com.adatech.ecommerce.model.Pedido;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface PedidoService {
 
     Pedido criarPedido(String cpfCliente);
 
-    boolean adicionarItem(int pedidoId, int produtoId, int quantidade, double precoVenda);
+    boolean adicionarItem(int pedidoId, int produtoId, int quantidade, BigDecimal precoVenda);
 
     boolean removerItem(int pedidoId, int produtoId);
 
