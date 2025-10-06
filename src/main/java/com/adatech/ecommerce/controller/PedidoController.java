@@ -6,6 +6,7 @@ import com.adatech.ecommerce.service.PedidoService;
 import com.adatech.ecommerce.exception.RecursoNaoEncontradoException;
 import com.adatech.ecommerce.exception.RegraDeNegocioException;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class PedidoController {
@@ -36,7 +37,7 @@ public class PedidoController {
         }
     }
 
-    public boolean adicionarItem(int pedidoId, int produtoId, int quantidade, double precoVenda) {
+    public boolean adicionarItem(int pedidoId, int produtoId, int quantidade, BigDecimal precoVenda) {
         System.out.println("\n--- Adicionar Item ---");
         try {
             // As validações de ID, quantidade e preço (como números positivos)

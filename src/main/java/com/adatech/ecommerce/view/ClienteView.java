@@ -143,10 +143,13 @@ public class ClienteView {
     }
 
     private void atualizarCliente() {
-
         System.out.println("\n--- Atualizar Cliente ---");
-        System.out.print("CPF do cliente para busca: ");
+        System.out.print("CPF do cliente para busca ou 0 para voltar ao MENU: ");
         String cpf = scanner.nextLine().trim();
+
+        if (cpf.equals("0")) {
+            return;
+        }
 
         Cliente existente = clienteController.buscarPorCpf(cpf);
         if (existente == null) {
@@ -154,32 +157,60 @@ public class ClienteView {
             return;
         }
 
-        System.out.println("Cliente encontrado. Deixe o campo em branco para manter o valor atual.");
+        System.out.println("\nCliente encontrado: " + existente.getNome());
+        System.out.println("Deixe o campo em branco e pressione Enter para manter os dados");
 
-        System.out.print("Novo nome (" + existente.getNome() + "): ");
-        String nome = scanner.nextLine().trim();
-        if (!nome.isBlank()) existente.setNome(nome);
+        while (true) {
+            System.out.print("Novo nome (" + existente.getNome() + "): ");
+            String nome = scanner.nextLine().trim();
+            if (nome.isEmpty()) {
+                break;
+            }
+            if (!nome.matches("[a-zA-Z\\s]+")) {
+                System.err.println(" ATENÇÃO: O nome deve conter apenas letras e espaços.");
+            } else {
+                existente.setNome(nome);
+                break;
+            }
+        }
 
-        System.out.print("Novo email (" + existente.getEmail() + "): ");
-        String email = scanner.nextLine().trim();
-        if (!email.isBlank()) existente.setEmail(email);
+        while (true) {
+            System.out.print("Novo email (" + existente.getEmail() + "): ");
+            String email = scanner.nextLine().trim();
+            if (email.isEmpty()) {
+                break;
+            }
+            String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
+            if (!email.matches(emailRegex)) {
+                System.err.println(" Formato de e-mail inválido. Por favor, tente novamente.");
+            } else {
+                existente.setEmail(email);
+                break;
+            }
+        }
 
-        System.out.print("Novo endereço (" + existente.getEndereco() + "): ");
-        String endereco = scanner.nextLine().trim();
-        if (!endereco.isBlank()) existente.setEndereco(endereco);
+        while (true) {
+            System.out.print("Novo endereço (" + existente.getEndereco() + "): ");
+            String endereco = scanner.nextLine().trim();
+            if (endereco.isEmpty()) {
+                break;
+            }
+            existente.setEndereco(endereco);
+            break;
+        }
 
-        // Tratamento de exceção em caso de erro na atualização (simulando um erro de domínio)
         try {
-            boolean ok = clienteController.atualizarCliente(existente);
-            System.out.println(ok ? "Cliente atualizado com sucesso." : "Não foi possível atualizar os dados (verifique a lógica no Controller).");
+            clienteController.atualizarCliente(existente);
+            System.out.println("\n Cliente atualizado com sucesso!");
+        } catch (BusinessException ex) {
+            System.err.println("\nErro inesperado: " + ex.getMessage());
         } catch (Exception ex) {
-            System.err.println("Falha ao atualizar o cliente. Detalhe: " + ex.getMessage());
+            System.err.println("\nOcorreu um erro inesperado ao salvar as alterações: " + ex.getMessage());
         }
     }
 
     private void listarClientes() {
         System.out.println("\n--- Lista de Clientes ---");
-        // Tratamento de exceção em caso de erro na busca ou conexão
         try {
             List<Cliente> clientes = clienteController.listarClientes();
             if (clientes.isEmpty()) {
@@ -213,19 +244,15 @@ public class ClienteView {
         }
     }
 
-    // *** MÉTODO MELHORADO COM nextLine() + parse COM try/catch ***
     private void buscarClientePorId() {
         System.out.println("\n--- Busca de Cliente por ID ---");
         System.out.print("Digite o ID (apenas números): ");
 
-        // 1. Leitura sempre como String
         String idText = scanner.nextLine().trim();
 
         try {
-            // 2. Tentativa de Conversão (Parse)
             int id = Integer.parseInt(idText);
 
-            // 3. Chamada ao Controller com tratamento de exceção
             Cliente cliente = clienteController.buscarPorId(id);
             if (cliente != null) {
                 System.out.println("Cliente encontrado:");
@@ -234,10 +261,8 @@ public class ClienteView {
                 System.err.println("Cliente com ID " + id + " não encontrado.");
             }
         } catch (NumberFormatException ex) {
-            // 4. Captura e Mensagem Amigável se a entrada não for um número
             System.err.println("Erro: ID inválido. O ID deve ser um número inteiro (Ex: 5). Detalhe: " + ex.getMessage());
         } catch (Exception ex) {
-            // Captura qualquer outro erro que possa vir do Controller/Sistema
             System.err.println("Falha ao buscar o cliente por ID. Detalhe: " + ex.getMessage());
         }
     }

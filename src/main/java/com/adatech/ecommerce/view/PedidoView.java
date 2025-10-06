@@ -1,22 +1,28 @@
 package com.adatech.ecommerce.view;
 
 import com.adatech.ecommerce.controller.PedidoController;
+import com.adatech.ecommerce.controller.ProdutoController;
+import com.adatech.ecommerce.model.ItemVenda;
 import com.adatech.ecommerce.model.Pedido;
-
+import com.adatech.ecommerce.model.Produto;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Scanner;
 
 public class PedidoView {
 
     private final PedidoController pedidoController;
+    private final ProdutoController produtoController;
     private final Scanner scanner;
 
-    public PedidoView(PedidoController pedidoController, Scanner scanner) {
+    public PedidoView(PedidoController pedidoController, ProdutoController produtoController, Scanner scanner) {
         this.pedidoController = pedidoController;
+        this.produtoController = produtoController;
         this.scanner = scanner;
     }
 
     public void exibirMenu() {
+        // (Este método permanece igual ao seu)
         int opcao;
         do {
             System.out.println("\n--- Menu de Pedidos ---");
@@ -25,78 +31,60 @@ public class PedidoView {
             System.out.println("3. Listar Pedidos");
             System.out.println("0. Voltar");
             System.out.print("Escolha uma opção: ");
-
-            // Refatoração: Usando nextLine() + parse com try/catch para a opção
             String entrada = scanner.nextLine().trim();
-            opcao = -1; // Valor padrão para inválido
-
             try {
                 opcao = Integer.parseInt(entrada);
             } catch (NumberFormatException ex) {
-                System.err.println("Entrada inválida. Por favor, digite apenas o número da opção.");
-                // continue; // Não precisa de continue, o switch lida com o default
+                opcao = -1;
             }
-
             switch (opcao) {
-                case 1:
-                    criarPedido();
-                    break;
-                case 2:
-                    gerenciarPedido();
-                    break;
-                case 3:
-                    listarPedidos();
-                    break;
-                case 0:
-                    System.out.println("Voltando ao menu principal...");
-                    break;
-                default:
-                    if (opcao != -1) { // Evita repetir a mensagem de erro já dada pelo catch
-                        System.err.println("Opção inválida. Tente novamente.");
-                    }
+                case 1: criarPedido(); break;
+                case 2: gerenciarPedido(); break;
+                case 3: listarPedidos(); break;
+                case 0: System.out.println("Voltando ao menu principal..."); break;
+                default: System.err.println("Opção inválida. Tente novamente.");
             }
         } while (opcao != 0);
     }
 
     private void criarPedido() {
+        // (Este método permanece igual ao seu)
         System.out.println("\n--- Criar Pedido ---");
         System.out.print("Digite o CPF do cliente para o novo pedido: ");
         String cpfCliente = scanner.nextLine().trim();
-
         try {
             Pedido novoPedido = pedidoController.criarPedido(cpfCliente);
             if (novoPedido != null) {
                 System.out.println("Pedido criado com sucesso! ID do pedido: " + novoPedido.getId());
-            } else {
-                System.err.println("Falha ao criar o pedido. Verifique se o cliente existe ou se há outro erro.");
+                System.out.println("Agora, vá em 'Gerenciar Pedido Existente' para adicionar itens.");
             }
         } catch (Exception ex) {
-            System.err.println("Erro ao criar pedido. Detalhe: " + ex.getMessage());
+            System.err.println("Erro ao criar pedido: " + ex.getMessage());
         }
     }
 
     private void gerenciarPedido() {
-        System.out.println("\n--- Gerenciar Pedido Existente ---");
-        System.out.print("Digite o ID do pedido que deseja gerenciar: ");
-
+        System.out.print("\nDigite o ID do pedido que deseja gerenciar: ");
         int idPedido;
         try {
-            // Leitura segura do ID
             idPedido = Integer.parseInt(scanner.nextLine().trim());
         } catch (NumberFormatException ex) {
-            System.err.println("Erro: ID de pedido inválido. Detalhe: " + ex.getMessage());
-            return;
-        }
-
-        Pedido pedido = pedidoController.buscarPedidoPorId(idPedido);
-        if (pedido == null) {
-            System.err.println("Erro: Pedido ID " + idPedido + " não encontrado.");
+            System.err.println("Erro: ID de pedido inválido.");
             return;
         }
 
         int opcao;
         do {
-            System.out.println("\n--- Pedido ID: " + pedido.getId() + " | Status: " + pedido.getStatus() + " ---");
+            // A cada ação, buscamos o estado mais recente do pedido
+            Pedido pedido = pedidoController.buscarPedidoPorId(idPedido);
+            if (pedido == null) {
+                System.err.println("Erro: Pedido ID " + idPedido + " não encontrado.");
+                return;
+            }
+
+            // Exibe o "Carrinho de Compras" atualizado
+            exibirResumoDoPedido(pedido);
+
             System.out.println("1. Adicionar Item");
             System.out.println("2. Remover Item");
             System.out.println("3. Alterar Quantidade do Item");
@@ -107,122 +95,149 @@ public class PedidoView {
             System.out.print("Escolha uma opção: ");
 
             String entrada = scanner.nextLine().trim();
-            opcao = -1;
-
             try {
                 opcao = Integer.parseInt(entrada);
             } catch (NumberFormatException ex) {
-                System.err.println("Entrada inválida. Por favor, digite apenas o número da opção.");
+                opcao = -1;
             }
 
             try {
                 switch (opcao) {
-                    case 1:
-                        adicionarItemAoPedido(pedido.getId());
-                        break;
-                    case 2:
-                        removerItemDoPedido(pedido.getId());
-                        break;
-                    case 3:
-                        alterarQuantidadeItemDoPedido(pedido.getId());
-                        break;
-                    case 4:
-                        pedidoController.finalizarPedido(pedido.getId());
-                        System.out.println("Pedido finalizado.");
-                        break;
-                    case 5:
-                        pedidoController.pagarPedido(pedido.getId());
-                        System.out.println("Pedido pago.");
-                        break;
-                    case 6:
-                        pedidoController.entregarPedido(pedido.getId());
-                        System.out.println("Pedido entregue.");
-                        break;
-                    case 0:
-                        System.out.println("Voltando...");
-                        break;
-                    default:
-                        if (opcao != -1) {
-                            System.err.println("Opção inválida. Tente novamente.");
-                        }
+                    case 1: adicionarItemAoPedido(pedido); break;
+                    case 2: removerItemDoPedido(pedido); break;
+                    case 3: alterarQuantidadeItemDoPedido(pedido); break;
+                    case 4: pedidoController.finalizarPedido(idPedido); break;
+                    case 5: pedidoController.pagarPedido(idPedido); break;
+                    case 6: pedidoController.entregarPedido(idPedido); break;
+                    case 0: System.out.println("Voltando..."); break;
+                    default: System.err.println("Opção inválida. Tente novamente.");
                 }
             } catch (Exception ex) {
-                System.err.println("Erro na operação do pedido. Detalhe: " + ex.getMessage());
+                System.err.println("\nERRO: " + ex.getMessage());
             }
 
         } while (opcao != 0);
     }
 
-    // Método auxiliar para Adicionar Item (isolando a lógica de leitura segura)
-    private void adicionarItemAoPedido(int pedidoId) {
-        System.out.print("Digite o ID do produto: ");
-        String produtoIdText = scanner.nextLine().trim();
-        System.out.print("Digite a quantidade: ");
-        String quantidadeText = scanner.nextLine().trim();
-        System.out.print("Digite o preço de venda (Ex: 10.50): ");
-        String precoVendaText = scanner.nextLine().trim().replace(",", "."); // Aceita vírgula ou ponto
+    private void exibirResumoDoPedido(Pedido pedido) {
+        System.out.println("\n+-----------------------------------------------------+");
+        System.out.println("| RESUMO DO PEDIDO ID: " + pedido.getId() + " | STATUS: " + pedido.getStatus());
+        System.out.println("+-----------------------------------------------------+");
+        if (pedido.getItens().isEmpty()) {
+            System.out.println("| Carrinho vazio.                                     |");
+        } else {
+            System.out.printf("| %-30s | %-5s | %-10s |\n", "Produto", "Qtd", "Subtotal");
+            System.out.println("|--------------------------------+-------+------------|");
+            for (ItemVenda item : pedido.getItens()) {
+                System.out.printf("| %-30s | %-5d | R$ %-8.2f |\n",
+                        item.getProduto().getNome(),
+                        item.getQuantidade(),
+                        item.calcularSubtotal());
+            }
+        }
+        System.out.println("+--------------------------------+-------+------------+");
+        System.out.printf("| Total Bruto: R$ %-35.2f |\n", pedido.getValorBruto());
+        System.out.println("+-----------------------------------------------------+\n");
+    }
+
+    private void adicionarItemAoPedido(Pedido pedido) {
+        System.out.println("\n--- Adicionar Item ao Pedido ---");
+        System.out.println("Produtos disponíveis:");
+
+        List<Produto> produtos = produtoController.listarProdutos();
+        if (produtos.isEmpty()) {
+            System.out.println("Nenhum produto cadastrado no sistema.");
+            return;
+        }
+
+        System.out.printf("%-5s | %-30s | %-10s\n", "ID", "Nome", "Preço");
+        System.out.println("------+--------------------------------+-----------");
+        for (Produto produto : produtos) {
+            System.out.printf("%-5d | %-30s | R$ %-8.2f\n", produto.getId(), produto.getNome(), produto.getPreco());
+        }
 
         try {
-            int produtoId = Integer.parseInt(produtoIdText);
-            int quantidade = Integer.parseInt(quantidadeText);
-            // double foi mantido para compatibilidade, mas BigDecimal seria melhor em um sistema financeiro real.
-            double precoVenda = Double.parseDouble(precoVendaText);
+            System.out.print("\nDigite o ID do produto que deseja adicionar: ");
+            int produtoId = Integer.parseInt(scanner.nextLine().trim());
 
-            pedidoController.adicionarItem(pedidoId, produtoId, quantidade, precoVenda);
-            System.out.println("Item adicionado com sucesso.");
+            System.out.print("Digite a quantidade: ");
+            int quantidade = Integer.parseInt(scanner.nextLine().trim());
+
+            // Sugere o preço padrão, mas permite alteração
+            Produto produtoSelecionado = produtoController.buscarProdutoPorId(produtoId);
+            if (produtoSelecionado == null) {
+                System.err.println("Produto com ID " + produtoId + " não encontrado.");
+                return;
+            }
+
+            System.out.print("Digite o preço de venda (padrão: " + produtoSelecionado.getPreco() + "): ");
+            String precoVendaText = scanner.nextLine().trim().replace(",", ".");
+
+            BigDecimal precoVenda;
+            if (precoVendaText.isEmpty()) {
+                precoVenda = produtoSelecionado.getPreco();
+            } else {
+                precoVenda = new BigDecimal(precoVendaText);
+            }
+
+            // ATENÇÃO: AQUI USAMOS BIGDECIMAL, NÃO DOUBLE
+            pedidoController.adicionarItem(pedido.getId(), produtoId, quantidade, precoVenda);
+            System.out.println("✅ Item adicionado com sucesso.");
+
         } catch (NumberFormatException ex) {
-            System.err.println("Erro de formato: Certifique-se de digitar números válidos. Detalhe: " + ex.getMessage());
+            System.err.println("Erro de formato: Certifique-se de digitar números válidos.");
         }
     }
 
-    // Método auxiliar para Remover Item (isolando a lógica de leitura segura)
-    private void removerItemDoPedido(int pedidoId) {
-        System.out.print("Digite o ID do produto a ser removido: ");
-        String produtoIdText = scanner.nextLine().trim();
-
+    // Os métodos de remover e alterar também recebem o objeto Pedido para maior eficiência
+    private void removerItemDoPedido(Pedido pedido) {
+        if (pedido.getItens().isEmpty()) {
+            System.err.println("O carrinho já está vazio.");
+            return;
+        }
+        System.out.print("Digite o ID do produto a ser removido do carrinho: ");
         try {
-            int produtoIdRemover = Integer.parseInt(produtoIdText);
-            pedidoController.removerItem(pedidoId, produtoIdRemover);
-            System.out.println("Item removido com sucesso.");
+            int produtoIdRemover = Integer.parseInt(scanner.nextLine().trim());
+            pedidoController.removerItem(pedido.getId(), produtoIdRemover);
+            System.out.println("✅ Item removido com sucesso.");
         } catch (NumberFormatException ex) {
-            System.err.println("Erro de formato: O ID do produto deve ser um número inteiro. Detalhe: " + ex.getMessage());
+            System.err.println("Erro de formato: O ID do produto deve ser um número inteiro.");
         }
     }
 
-    // Método auxiliar para Alterar Quantidade (isolando a lógica de leitura segura)
-    private void alterarQuantidadeItemDoPedido(int pedidoId) {
-        System.out.print("Digite o ID do produto a ser alterado: ");
-        String produtoIdText = scanner.nextLine().trim();
-        System.out.print("Digite a nova quantidade: ");
-        String novaQuantidadeText = scanner.nextLine().trim();
-
+    private void alterarQuantidadeItemDoPedido(Pedido pedido) {
+        if (pedido.getItens().isEmpty()) {
+            System.err.println("O carrinho está vazio.");
+            return;
+        }
         try {
-            int produtoIdAlterar = Integer.parseInt(produtoIdText);
-            int novaQuantidade = Integer.parseInt(novaQuantidadeText);
-
-            pedidoController.alterarQuantidadeItem(pedidoId, produtoIdAlterar, novaQuantidade);
-            System.out.println("Quantidade alterada com sucesso.");
+            System.out.print("Digite o ID do produto a ser alterado: ");
+            int produtoIdAlterar = Integer.parseInt(scanner.nextLine().trim());
+            System.out.print("Digite a nova quantidade: ");
+            int novaQuantidade = Integer.parseInt(scanner.nextLine().trim());
+            pedidoController.alterarQuantidadeItem(pedido.getId(), produtoIdAlterar, novaQuantidade);
+            System.out.println("✅ Quantidade alterada com sucesso.");
         } catch (NumberFormatException ex) {
-            System.err.println("Erro de formato: Certifique-se de digitar números inteiros. Detalhe: " + ex.getMessage());
+            System.err.println("Erro de formato: Certifique-se de digitar números inteiros.");
         }
     }
 
     private void listarPedidos() {
-        System.out.println("\n--- Lista de Pedidos ---");
+        // (Este método permanece igual ao seu, mas pode ser aprimorado para mostrar mais detalhes)
+        System.out.println("\n--- Lista de Todos os Pedidos ---");
         try {
             List<Pedido> pedidos = pedidoController.listarPedidos();
             if (pedidos.isEmpty()) {
                 System.out.println("Nenhum pedido cadastrado.");
             } else {
                 for (Pedido pedido : pedidos) {
-                    System.out.println(pedido);
-                    // Supondo que getValorTotal() exista e não cause exceção
-                    // System.out.println("Valor Total: " + pedido.getValorTotal());
-                    System.out.println("--------------------");
+                    System.out.println("ID: " + pedido.getId() + " | Cliente: " + pedido.getCliente().getNome() +
+                            " | Status: " + pedido.getStatus() + " | Valor Total: R$ " + pedido.getValorTotal());
+                    System.out.println("--------------------------------------------------");
                 }
             }
         } catch (Exception ex) {
-            System.err.println("Falha ao listar os pedidos. Detalhe: " + ex.getMessage());
+            System.err.println("Falha ao listar os pedidos: " + ex.getMessage());
         }
     }
 }

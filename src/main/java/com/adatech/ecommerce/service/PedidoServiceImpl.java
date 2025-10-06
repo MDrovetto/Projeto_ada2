@@ -46,36 +46,14 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
-    public boolean adicionarItem(int pedidoId, int produtoId, int quantidade, double precoVenda) {
+    public boolean adicionarItem(int pedidoId, int produtoId, int quantidade, BigDecimal precoVenda) {
 
-        if (quantidade <= 0) {
-            throw new RegraDeNegocioException("A quantidade do item deve ser positiva.");
-        }
-        if (precoVenda <= 0) {
+        if (precoVenda == null || precoVenda.compareTo(BigDecimal.ZERO) <= 0) {
             throw new RegraDeNegocioException("O preço de venda deve ser positivo.");
         }
-
         Pedido pedido = pedidoRepository.buscarPorId(pedidoId);
         Produto produto = produtoRepository.buscarPorId(produtoId);
-
-        if (pedido == null) {
-            throw new RecursoNaoEncontradoException("Pedido ID " + pedidoId + " não encontrado.");
-        }
-        if (produto == null) {
-            throw new RecursoNaoEncontradoException("Produto ID " + produtoId + " não encontrado.");
-        }
-
-        if (pedido.getStatus() != StatusPedido.ABERTO) {
-            throw new RegraDeNegocioException("Não é possível adicionar itens a um pedido com status '" + pedido.getStatus() + "'.");
-        }
-
-        // Se o pedido tinha um cupom aplicado, ele deve ser removido ou revalidado
-        // antes de adicionar um novo item, para garantir a precisão do valor total.
-        // Simplificando, assumimos que o método 'pedido.adicionarItem' recalcula o valor total.
-
-        BigDecimal precoVendaBigDecimal = BigDecimal.valueOf(precoVenda);
-        ItemVenda item = new ItemVenda(produto, quantidade, precoVendaBigDecimal);
-
+        ItemVenda item = new ItemVenda(produto, quantidade, precoVenda);
         pedido.adicionarItem(item);
         pedidoRepository.salvar(pedido);
         return true;

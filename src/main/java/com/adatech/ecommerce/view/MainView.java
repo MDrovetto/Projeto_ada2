@@ -43,7 +43,7 @@ public class MainView {
 
         this.clienteView = new ClienteView(clienteController, scanner);
         this.produtoView = new ProdutoView(produtoController, scanner);
-        this.pedidoView = new PedidoView(pedidoController, scanner);
+        this.pedidoView = new PedidoView(pedidoController, produtoController, scanner);
         this.cupomView = new CupomView(cupomController, scanner);
     }
 
