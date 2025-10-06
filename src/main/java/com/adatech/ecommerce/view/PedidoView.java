@@ -22,7 +22,6 @@ public class PedidoView {
     }
 
     public void exibirMenu() {
-        // (Este método permanece igual ao seu)
         int opcao;
         do {
             System.out.println("\n--- Menu de Pedidos ---");
@@ -227,7 +226,7 @@ public class PedidoView {
 
             // ATENÇÃO: AQUI USAMOS BIGDECIMAL, NÃO DOUBLE
             pedidoController.adicionarItem(pedido.getId(), produtoId, quantidade, precoVenda);
-            System.out.println("✅ Item adicionado com sucesso.");
+            System.out.println("Item adicionado com sucesso.");
 
         } catch (NumberFormatException ex) {
             System.err.println("Erro de formato: Certifique-se de digitar números válidos.");
@@ -244,7 +243,7 @@ public class PedidoView {
         try {
             int produtoIdRemover = Integer.parseInt(scanner.nextLine().trim());
             pedidoController.removerItem(pedido.getId(), produtoIdRemover);
-            System.out.println("✅ Item removido com sucesso.");
+            System.out.println("Item removido com sucesso.");
         } catch (NumberFormatException ex) {
             System.err.println("Erro de formato: O ID do produto deve ser um número inteiro.");
         }
@@ -261,7 +260,7 @@ public class PedidoView {
             System.out.print("Digite a nova quantidade: ");
             int novaQuantidade = Integer.parseInt(scanner.nextLine().trim());
             pedidoController.alterarQuantidadeItem(pedido.getId(), produtoIdAlterar, novaQuantidade);
-            System.out.println("✅ Quantidade alterada com sucesso.");
+            System.out.println("Quantidade alterada com sucesso.");
         } catch (NumberFormatException ex) {
             System.err.println("Erro de formato: Certifique-se de digitar números inteiros.");
         }
