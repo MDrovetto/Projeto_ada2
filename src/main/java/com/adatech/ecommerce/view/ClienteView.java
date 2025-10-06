@@ -1,6 +1,7 @@
 package com.adatech.ecommerce.view;
 
 import com.adatech.ecommerce.controller.ClienteController;
+import com.adatech.ecommerce.exception.BusinessException;
 import com.adatech.ecommerce.model.Cliente;
 import java.util.List;
 import java.util.Scanner;
@@ -26,12 +27,8 @@ public class ClienteView {
             System.out.println("(5) Buscar Cliente por ID");
             System.out.println("(6) Voltar");
             System.out.println("Escolha uma opção acima:");
-
-            // Leitura da opção como String (scanner.nextLine()) para robustez
             String opcao = scanner.nextLine().trim();
 
-            // Não precisamos de try/catch aqui, pois o switch já lida com Strings
-            // e o default pega qualquer valor inválido.
             switch (opcao) {
                 case "1":
                     cadastrarCliente();
@@ -46,7 +43,7 @@ public class ClienteView {
                     buscarClientePorCpf();
                     break;
                 case "5":
-                    buscarClientePorId(); // Método refatorado para ter try/catch no parse
+                    buscarClientePorId();
                     break;
                 case "6":
                     return;
@@ -57,25 +54,91 @@ public class ClienteView {
     }
 
     private void cadastrarCliente() {
-        System.out.println("\n--- Cadastrar Clientes ---");
+        String nome = "";
+        String cpf = "";
+        String email = "";
+        String endereco = "";
+        boolean cancelado = false;
 
-        // Todas as entradas já são Strings, o que é seguro.
-        System.out.print("Nome: ");
-        String nome= scanner.nextLine().trim();
-        System.out.print("CPF: ");
-        String cpf= scanner.nextLine().trim();
-        System.out.print("Email: ");
-        String email= scanner.nextLine().trim();
-        System.out.print("Endereço: ");
-        String endereco= scanner.nextLine().trim();
+        while (true) {
+            System.out.println("\n--- Cadastrar Novo Cliente ---");
+            System.out.println("Digite 0 para voltar ao menu");
+            System.out.print("Nome: ");
+            nome = scanner.nextLine().trim();
 
-        // Tratamento de exceção em caso de erro na criação ou cadastro (simulando um erro de domínio)
-        try {
-            Cliente cliente = new Cliente(0, nome, cpf, email, endereco);
-            clienteController.cadastrarCliente(cliente);
-            System.out.println("Cliente cadastrado com sucesso!");
-        } catch (Exception ex) {
-            System.err.println("Falha ao cadastrar o cliente. Detalhe: " + ex.getMessage());
+            if (nome.equalsIgnoreCase("0")) {
+                cancelado = true;
+                break;
+            }
+            if (nome.isEmpty()) {
+                System.err.println("Digite um nome válido por favor.");
+            } else if (!nome.matches("[a-zA-Z\\s]+")) {
+                System.err.println("O nome deve conter apenas letras e espaços.");
+            } else {
+                break;
+            }
+        }
+
+        if (!cancelado) {
+            while (true) {
+                System.out.print("CPF 11 dígitos: ");
+                cpf = scanner.nextLine().trim();
+                if (cpf.equalsIgnoreCase("0")) {
+                    cancelado = true;
+                    break;
+                }
+                if (!cpf.matches("\\d{11}")) {
+                    System.err.println("CPF inválido. Deve conter 11 números. Por favor, tente novamente.");
+                } else {
+                    break;
+                }
+            }
+        }
+
+        if (!cancelado) {
+            while (true) {
+                System.out.print("Email: ");
+                email = scanner.nextLine().trim();
+                if (email.equalsIgnoreCase("0")) {
+                    cancelado = true;
+                    break;
+                }
+                String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
+                if (!email.matches(emailRegex)) {
+                    System.err.println("Formato de e-mail inválido. Por favor, tente novamente.");
+                } else {
+                    break;
+                }
+            }
+        }
+
+        if (!cancelado) {
+            while (true) {
+                System.out.print("Endereço: ");
+                endereco = scanner.nextLine().trim();
+                if (endereco.equalsIgnoreCase("0")) {
+                    cancelado = true;
+                    break;
+                }
+                if (endereco.isEmpty()) {
+                    System.err.println("Endereço inválido. Por favor, tente novamente.");
+                } else {
+                    break;
+                }
+            }
+        }
+
+        if (!cancelado) {
+            try {
+                Cliente cliente = new Cliente(0, nome, cpf, email, endereco);
+                clienteController.cadastrarCliente(cliente);
+                System.out.println("\nCliente cadastrado com sucesso!");
+            } catch (BusinessException ex) {
+                System.err.println("\nEsse CPF já existe. " + ex.getMessage());
+                System.out.println("Por favor, verifique os dados e comece novamente.");
+            } catch (Exception ex) {
+                System.err.println("\nOcorreu um erro inesperado: " + ex.getMessage());
+            }
         }
     }
 
