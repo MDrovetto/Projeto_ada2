@@ -22,7 +22,6 @@ public class PedidoView {
     }
 
     public void exibirMenu() {
-        // (Este método permanece igual ao seu)
         int opcao;
         do {
             System.out.println("\n--- Menu de Pedidos ---");
@@ -48,17 +47,46 @@ public class PedidoView {
     }
 
     private void criarPedido() {
-        // (Este método permanece igual ao seu)
         System.out.println("\n--- Criar Pedido ---");
-        System.out.print("Digite o CPF do cliente para o novo pedido: ");
+        System.out.print("Digite o CPF do cliente para o novo pedido ou 0 para cancelar: ");
         String cpfCliente = scanner.nextLine().trim();
+
+        if (cpfCliente.equals("0")) {
+            return;
+        }
+
         try {
             Pedido novoPedido = pedidoController.criarPedido(cpfCliente);
             if (novoPedido != null) {
                 System.out.println("Pedido criado com sucesso! ID do pedido: " + novoPedido.getId());
-                System.out.println("Agora, vá em 'Gerenciar Pedido Existente' para adicionar itens.");
+
+            while (true) {
+                System.out.print("Deseja adicionar itens a este pedido agora? Escolha uma opção (1) Sim ou (2) Não: ");
+                String entrada = scanner.nextLine().trim();
+            int opcao;
+
+            try {
+                opcao = Integer.parseInt(entrada);
             }
-        } catch (Exception ex) {
+            catch (NumberFormatException e) {
+                        // Se o usuário digitar um texto, a opção se torna inválida
+                        opcao = -1;
+                    }
+            switch (opcao)
+            {
+                case 1:
+                    gerenciarPedido(novoPedido.getId());
+                    return;
+                case 2:
+                    return;
+
+                default:
+                    System.err.println("Opção inválida. Por favor, digite 1 para Sim ou 2 para Não.");
+                    }
+                }
+            }
+        }
+        catch (Exception ex) {
             System.err.println("Erro ao criar pedido: " + ex.getMessage());
         }
     }
@@ -68,23 +96,24 @@ public class PedidoView {
         int idPedido;
         try {
             idPedido = Integer.parseInt(scanner.nextLine().trim());
+            gerenciarPedido(idPedido);
         } catch (NumberFormatException ex) {
-            System.err.println("Erro: ID de pedido inválido.");
-            return;
+            System.err.println("Erro: ID de pedido inválido. Deve ser um número.");
         }
+    }
 
+    private void gerenciarPedido(int idPedido) {
         int opcao;
         do {
-            // A cada ação, buscamos o estado mais recente do pedido
             Pedido pedido = pedidoController.buscarPedidoPorId(idPedido);
             if (pedido == null) {
-                System.err.println("Erro: Pedido ID " + idPedido + " não encontrado.");
+                System.err.println("Atenção: Pedido ID " + idPedido + " não encontrado.");
                 return;
             }
 
-            // Exibe o "Carrinho de Compras" atualizado
-            exibirResumoDoPedido(pedido);
 
+
+            exibirResumoDoPedido(pedido);
             System.out.println("1. Adicionar Item");
             System.out.println("2. Remover Item");
             System.out.println("3. Alterar Quantidade do Item");
@@ -103,14 +132,29 @@ public class PedidoView {
 
             try {
                 switch (opcao) {
-                    case 1: adicionarItemAoPedido(pedido); break;
-                    case 2: removerItemDoPedido(pedido); break;
-                    case 3: alterarQuantidadeItemDoPedido(pedido); break;
-                    case 4: pedidoController.finalizarPedido(idPedido); break;
-                    case 5: pedidoController.pagarPedido(idPedido); break;
-                    case 6: pedidoController.entregarPedido(idPedido); break;
-                    case 0: System.out.println("Voltando..."); break;
-                    default: System.err.println("Opção inválida. Tente novamente.");
+                    case 1:
+                        adicionarItemAoPedido(pedido);
+                        break;
+                    case 2:
+                        removerItemDoPedido(pedido);
+                        break;
+                    case 3:
+                        alterarQuantidadeItemDoPedido(pedido);
+                        break;
+                    case 4:
+                        pedidoController.finalizarPedido(idPedido);
+                        break;
+                    case 5:
+                        pedidoController.pagarPedido(idPedido);
+                        break;
+                    case 6:
+                        pedidoController.entregarPedido(idPedido);
+                        break;
+                    case 0:
+                        System.out.println("Voltando ao menu principal");
+                        break;
+                    default:
+                        System.err.println("Opção inválida. Tente novamente.");
                 }
             } catch (Exception ex) {
                 System.err.println("\nERRO: " + ex.getMessage());
@@ -182,7 +226,7 @@ public class PedidoView {
 
             // ATENÇÃO: AQUI USAMOS BIGDECIMAL, NÃO DOUBLE
             pedidoController.adicionarItem(pedido.getId(), produtoId, quantidade, precoVenda);
-            System.out.println("✅ Item adicionado com sucesso.");
+            System.out.println("Item adicionado com sucesso.");
 
         } catch (NumberFormatException ex) {
             System.err.println("Erro de formato: Certifique-se de digitar números válidos.");
@@ -199,7 +243,7 @@ public class PedidoView {
         try {
             int produtoIdRemover = Integer.parseInt(scanner.nextLine().trim());
             pedidoController.removerItem(pedido.getId(), produtoIdRemover);
-            System.out.println("✅ Item removido com sucesso.");
+            System.out.println("Item removido com sucesso.");
         } catch (NumberFormatException ex) {
             System.err.println("Erro de formato: O ID do produto deve ser um número inteiro.");
         }
@@ -216,7 +260,7 @@ public class PedidoView {
             System.out.print("Digite a nova quantidade: ");
             int novaQuantidade = Integer.parseInt(scanner.nextLine().trim());
             pedidoController.alterarQuantidadeItem(pedido.getId(), produtoIdAlterar, novaQuantidade);
-            System.out.println("✅ Quantidade alterada com sucesso.");
+            System.out.println("Quantidade alterada com sucesso.");
         } catch (NumberFormatException ex) {
             System.err.println("Erro de formato: Certifique-se de digitar números inteiros.");
         }
